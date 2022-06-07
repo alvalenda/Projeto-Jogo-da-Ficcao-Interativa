@@ -1,4 +1,4 @@
-# Jogo-da-Ficcao-Interativa
+# Jogo da Ficcao Interativa
 Um jogo de aventura simples utilizando Javascript prompt. 
 
 Você irá criar um jogo de ficção interativa que simule a rotina diária de um personagem. Você pode escolher entre rotinas matinais, rotinas de trabalho, rotinas de estudos, aventuras épicas, histórias assustadoras, entre outras. A ideia do jogo é que o jogador faça as escolhas para o seu personagem e o conduza pela história. Cada escolha irá gerar uma consequência diferente para o seu personagem. Você será responsável por determinar o inicio e término da história, além de avançar o tempo a cada escolha.
@@ -11,3 +11,6 @@ Use toda sua criatividade para desenvolver uma história interessante e seja bem
 
 Lembre-se: Use sua criatividade, mas cuidado para não criar um projeto megalomaníaco! Vocês terão um bom tempo para fazer o projeto, mas durante esse tempo com certeza novas ideias surgirão e você precisará fazer várias alterações. A tentação pode ser grande, mas cuidado para não deixar o projeto tomar proporções de modo que não seja possível de ser executado dentro do prazo dado.
 
+* Linguagem: JavaScript
+* Tecnologias: Node.JS, JavaScript Vanilla
+* Carga horária: 40 horas
