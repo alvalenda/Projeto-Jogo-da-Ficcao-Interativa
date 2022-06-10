@@ -1,5 +1,9 @@
 console.clear();
 const prompt = require('prompt-sync')();
+const fs = require('fs');
+
+let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
+
 /*
     Variáveis Globais
 */
@@ -38,7 +42,7 @@ class Sala {
     static salas = [];
 
     constructor(nome, salamae, inimigo) {
-        this.name = nome;
+        this.nome = nome;
         this.portas = { Mae: salamae, Filha: [] };
         this.inimigo = inimigo;
 
@@ -103,15 +107,37 @@ class Ogro extends Monstro {
     }
 }
 
+function criarMonstro(nome) {
+    const lista = monstros['Monstros'];
+    let _monstro;
+    for (let i = 0; i < lista.length; i++) {
+        imprimeObjeto(lista[i]);
+        if (lista[i].Nome === nome) {
+            const [a, b, c, d] = [
+                lista[i].Atributos[0],
+                lista[i].Atributos[1],
+                lista[i].Atributos[2],
+                lista[i].Atributos[3],
+            ];
+            console.log(lista[i].Nome);
+            if (lista[i].Nome === 'Ogro') _monstro = new Ogro(a, b, c, d);
+            else _monstro = new Monstro(a, b, c, d);
+            return _monstro;
+        }
+    }
+}
+
 const player = new Player(playerName(), 'Magro');
 const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
-let inimigo = new Monstro(`Rato Gigante`, 6, 3, 0);
-const ogro = new Ogro('Blop', 72, 11, 3);
+const rato = criarMonstro('Rato Gigante');
+const ogro = criarMonstro('Ogro');
 
-imprimeObjeto(inimigo);
-imprimeObjeto(Ogro);
+imprimeObjeto(rato);
+imprimeObjeto(ogro);
+imprimeObjeto(cela);
 ogro.grita();
 imprimeObjeto(player);
 Sala.imprimeSalas();
 
 console.log(Monstro.combates, Sala.num_salas);
+console.log(monstros);
