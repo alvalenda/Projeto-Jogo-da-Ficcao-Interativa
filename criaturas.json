@@ -1,0 +1,11 @@
+{
+    "Monstros": [
+        {
+            "Nome": "Rato Gigante",
+            "Atributos": ["Rato Gigante", 6, 3, 0],
+            "Nível": 1
+        },
+        { "Nome": "Zumbi", "Atributos": ["Corpo Seco", 14, 5, 0], "Nível": 2 },
+        { "Nome": "Ogro", "Atributos": ["Blopiii", 72, 11, 3], "Nível": 4 }
+    ]
+}
