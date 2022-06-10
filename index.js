@@ -1,5 +1,6 @@
 console.clear();
 const prompt = require('prompt-sync')();
+const { resolvePtr } = require('dns');
 const fs = require('fs');
 
 let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
@@ -22,6 +23,10 @@ function playerName() {
     }
 }
 
+function rollaDado(faces = 20) {
+    return (roll = Math.floor(Math.random() * faces + 1));
+}
+
 function imprimeObjeto(objeto) {
     for (const chave in objeto) {
         if (Object.hasOwnProperty.call(objeto, chave)) {
@@ -30,6 +35,48 @@ function imprimeObjeto(objeto) {
         }
     }
 }
+
+function iniciaCombate(jogador, monstro) {
+    let turno = 0;
+    while (true) {
+        console.clear();
+        console.log(
+            `\n${monstro.nome} HP [${monstro.vida[0]}/${monstro.vida[1]}] 
+            \n\n\n\n\n\n${jogador.nome} HP[${jogador.vida[0]}/${jogador.vida[1]}]\n`,
+        );
+        prompt(`\t[Atacar]\t[Fugir]`);
+        const roll = rollaDado(20);
+        console.log(roll);
+
+        if (turno % 2 === 0) {
+            prompt(`${jogador.nome} tenta golpear ${monstro.nome}`);
+            if (roll + jogador.ataque >= 10 + monstro.defesa) {
+                const dano =
+                    jogador.ataque > monstro.defesa
+                        ? jogador.ataque - monstro.defesa
+                        : 0;
+                prompt(`\t${jogador.nome} causou ${dano} pontos de dano.`);
+                monstro.mudaVida(-dano);
+                if (monstro.vida[0] <= 0) return true;
+            } else prompt(`\t${jogador.nome} errou...`);
+            turno++;
+        } else {
+            prompt(`${monstro.nome} tenta acertar um golpe em ${jogador.nome}`);
+            console.log(roll);
+            if (roll + monstro.ataque >= 10 + jogador.defesa) {
+                const dano =
+                    monstro.ataque > jogador.defesa
+                        ? monstro.ataque - jogador.defesa
+                        : 0;
+                prompt(`\t${monstro.nome} te causou ${dano} pontos de dano.`);
+                jogador.mudaVida(-dano);
+                if (player.vida[0] <= 0) return false;
+            } else prompt(`\t${monstro.nome} errou...`);
+            turno++;
+        }
+    }
+}
+
 /*
     Trama
 */
@@ -71,18 +118,27 @@ class Player {
         this.ataque;
         this.defesa;
         this.level = 1;
+        this.alive = true;
 
         this.iniciaAtributos(classe);
     }
 
     iniciaAtributos(classe) {
         if (classe === 'Fordo') {
-            [this.vida, this.ataque, this.defesa] = [8, 4, 3];
+            [this.vida, this.ataque, this.defesa] = [[8, 8], 3, 2];
         } else if (classe === 'Magro') {
-            [this.vida, this.ataque, this.defesa] = [6, 3, 5];
+            [this.vida, this.ataque, this.defesa] = [[6, 6], 5, 0];
         } else {
-            [this.vida, this.ataque, this.defesa] = [7, 4, 4];
+            [this.vida, this.ataque, this.defesa] = [[7, 7], 4, 1];
         }
+    }
+
+    mudaVida(num) {
+        this.vida[0] += num;
+        if (this.vida[0] > this.vida[1]) this.vida[0] = this.vida[1];
+        if (this.vida[0] <= 0) this.alive = false;
+
+        return this.alive;
     }
 }
 
@@ -91,11 +147,20 @@ class Monstro {
 
     constructor(nome, vida, ataque, defesa) {
         this.nome = nome;
-        this.vida = vida;
+        this.vida = [vida, vida];
         this.ataque = ataque;
         this.defesa = defesa;
+        this.alive = true;
 
         Monstro.combates.push(this.nome);
+    }
+
+    mudaVida(num) {
+        this.vida[0] += num;
+        if (this.vida[0] > this.vida[1]) this.vida[0] = this.vida[1];
+        if (this.vida[0] <= 0) this.alive = false;
+
+        return this.alive;
     }
 }
 
@@ -128,16 +193,26 @@ function criarMonstro(nome) {
 }
 
 const player = new Player(playerName(), 'Magro');
-const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
+// const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
 const rato = criarMonstro('Rato Gigante');
-const ogro = criarMonstro('Ogro');
+// const ogro = criarMonstro('Ogro');
 
-imprimeObjeto(rato);
-imprimeObjeto(ogro);
-imprimeObjeto(cela);
-ogro.grita();
-imprimeObjeto(player);
-Sala.imprimeSalas();
+// imprimeObjeto(rato);
+// imprimeObjeto(ogro);
+// imprimeObjeto(cela);
+// ogro.grita();
+// imprimeObjeto(player);
+// Sala.imprimeSalas();
 
-console.log(Monstro.combates, Sala.num_salas);
-console.log(monstros);
+// console.log(Monstro.combates, Sala.num_salas);
+// console.log(monstros);
+
+if (iniciaCombate(player, rato))
+    console.log(`${player.nome} VENCEU O COMBATE!!!`);
+else
+    console.log(
+        `${player.nome} foi DERROTADO por ${
+            Monstro.combates[Monstro.combates.length - 1]
+        }`,
+    );
+console.log();

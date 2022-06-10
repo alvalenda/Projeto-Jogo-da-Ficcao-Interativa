@@ -2,7 +2,7 @@
     "Monstros": [
         {
             "Nome": "Rato Gigante",
-            "Atributos": ["Rato Gigante", 6, 3, 0],
+            "Atributos": ["Rato Gigante", 6, 4, 1],
             "Nível": 1
         },
         { "Nome": "Zumbi", "Atributos": ["Corpo Seco", 14, 5, 0], "Nível": 2 },
