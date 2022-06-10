@@ -11,6 +11,7 @@ Use toda sua criatividade para desenvolver uma história interessante e seja bem
 
 Lembre-se: Use sua criatividade, mas cuidado para não criar um projeto megalomaníaco! Vocês terão um bom tempo para fazer o projeto, mas durante esse tempo com certeza novas ideias surgirão e você precisará fazer várias alterações. A tentação pode ser grande, mas cuidado para não deixar o projeto tomar proporções de modo que não seja possível de ser executado dentro do prazo dado.
 
+---
 * Linguagem: JavaScript
 * Tecnologias: Node.JS, JavaScript Vanilla
 * Carga horária: 40 horas
