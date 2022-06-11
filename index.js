@@ -1,8 +1,8 @@
 console.clear();
 const prompt = require('prompt-sync')();
-const { resolvePtr } = require('dns');
+// const { resolvePtr } = require('dns');
 const fs = require('fs');
-const { stdout } = require('process');
+// const { stdout } = require('process');
 
 let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 
@@ -16,9 +16,9 @@ let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 function playerName() {
     while (true) {
         try {
-            const nome = prompt(`Qual é o seu nome sobrevivente 013? `);
-            if (nome.length < 3)
-                throw `Seu nome deve ter 3 ou mais caracteres...`;
+            const nome = prompt(`Qual é o seu nome SOBREVIVENTE...? `);
+            if (nome.length < 3) throw `Seu nome deve é curto demais...`;
+            else if (nome.length > 10) throw `Seu nome é longo demais...`;
             return nome;
         } catch (error) {}
     }
@@ -57,7 +57,7 @@ function iniciaCombate(jogador, monstro) {
 
         const roll = rollaDado(20);
         console.log(roll);
-        prompt(`Combate: Turno ${turno + 1}`);
+        prompt(`Turno ${turno + 1}`);
         if (turno % 2 === 0) {
             prompt(`${jogador.nome} tenta golpear ${monstro.nome}`);
             if (roll + jogador.ataque >= 10 + monstro.defesa) {
@@ -146,11 +146,11 @@ class Player {
     iniciaAtributos(classe) {
         this.equip[0] = 3;
         if (classe === 'Fordo') {
-            [this.vida, this.ataque, this.defesa] = [[8, 8], 2, 2];
+            [this.vida, this.ataque, this.defesa] = [[9, 9], 2, 2];
         } else if (classe === 'Magro') {
-            [this.vida, this.ataque, this.defesa] = [[6, 6], 4, 0];
+            [this.vida, this.ataque, this.defesa] = [[7, 7], 4, 0];
         } else {
-            [this.vida, this.ataque, this.defesa] = [[7, 7], 3, 1];
+            [this.vida, this.ataque, this.defesa] = [[8, 8], 3, 1];
         }
     }
 
@@ -215,7 +215,7 @@ function criarMonstro(nome) {
     }
 }
 
-const player = new Player(playerName(), 'Magro');
+const player = new Player(playerName(), 'Normal');
 // const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
 const rato = criarMonstro('Rato Gigante');
 // const ogro = criarMonstro('Ogro');
