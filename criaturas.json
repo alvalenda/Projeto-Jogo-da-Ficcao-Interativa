@@ -3,17 +3,17 @@
         {
             "Nome": "Rato Gigante",
             "Atributos": ["Rato Gigante", 7, 1, 1, [2, 1]],
-            "Nível": 1
+            "Nivel": 1
         },
         {
             "Nome": "Zumbi",
             "Atributos": ["Corpo Seco", 14, 5, 0, [5, 2]],
-            "Nível": 2
+            "Nivel": 2
         },
         {
             "Nome": "Ogro",
             "Atributos": ["Blopiii", 72, 11, 3, [10, 4]],
-            "Nível": 4
+            "Nivel": 4
         }
     ]
 }

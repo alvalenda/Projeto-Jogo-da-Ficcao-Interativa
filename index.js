@@ -37,60 +37,38 @@ function imprimeObjeto(objeto) {
     }
 }
 
-function barradeHP(objeto) {
-    const barra = [objeto.vida[0], objeto.vida[1]];
-    let vida = '[ ';
-    for (let i = 0; i < barra[1]; i++) {
-        i < barra[0] ? (vida += '#') : (vida += ' ');
-    }
-    vida += ' ]';
-    return vida;
-}
-
 function iniciaCombate(jogador, monstro) {
     let turno = 0;
     while (true) {
         console.clear();
-        console.log(`\t${monstro.nome}\tHP `, barradeHP(monstro));
+        console.log(monstro.printPV());
         console.log(`\n\n\n\n\n\n`);
-        console.log(`\t${jogador.nome}\tHP `, barradeHP(jogador));
+        console.log(jogador.printPV());
 
         const roll = rollaDado(20);
         console.log(roll);
         prompt(`Turno ${turno + 1}`);
-        if (turno % 2 === 0) {
-            prompt(`${jogador.nome} tenta golpear ${monstro.nome}`);
-            if (roll + jogador.ataque >= 10 + monstro.defesa) {
-                const dado = rollaDado(jogador.equip[0]);
-                const dano =
-                    dado + jogador.ataque > monstro.equip[1]
-                        ? dado + jogador.ataque - monstro.equip[1]
-                        : 0;
+
+        function resolveTurno(ataca, defende) {
+            prompt(`${ataca.nome} ATACA ${defende.nome}`);
+            if (roll + ataca.ataque >= 10 + defende.defesa) {
+                let dano = ataca.rolaDano();
+                dano = dano > defende.armadura ? dano - defende.armadura : 0;
                 prompt(
-                    `\t\t\t\t\tACERTOU!!! Você causou ${dano} pontos de dano!`,
+                    `\t\t\t\t\tACERTO!\t${ataca.nome} causa ${dano} pontos de dano em ${defende.nome}`,
                 );
-                monstro.mudaVida(-dano);
-                if (monstro.vida[0] <= 0) return true;
+                defende.pv = -dano;
             } else {
-                process.stdout.write(`\t\t\t\t\tERROU...`);
+                process.stdout.write(`\t\t\t\t\tO Ataque errou...`);
                 prompt();
             }
+            return defende.pv[0];
+        }
+
+        if (turno % 2 === 0) {
+            if (!resolveTurno(jogador, monstro)) return true;
         } else {
-            prompt(`${monstro.nome} tenta te acertar um golpe`);
-            if (roll + monstro.ataque >= 10 + jogador.defesa) {
-                const dado = rollaDado(monstro.equip[0]);
-                const dano =
-                    dado + monstro.ataque > jogador.equip[1]
-                        ? dado + monstro.ataque - jogador.equip[1]
-                        : 0;
-                prompt(
-                    `\t\t\t\t\tACERTOU!!! Você sofreu ${dano} pontos de dano.`,
-                );
-                jogador.mudaVida(-dano);
-                if (player.vida[0] <= 0) return false;
-            } else {
-                prompt(`\t\t\t\t\tERROU...`);
-            }
+            if (!resolveTurno(monstro, jogador)) return false;
         }
         turno++;
     }
@@ -125,50 +103,84 @@ class Sala {
     }
 }
 class Personagem {
-    constructor(nome, pv, forca, agilidade, equip, nivel) {
+    constructor(nome, pv, forca, agilidade, equip = [0, 0], nivel) {
         this._nome = nome;
         this._pv = { Atual: pv, Total: pv };
         this._forca = forca;
         this._agilidade = agilidade;
         this._equip = { Arma: equip[0], Armadura: equip[1] };
         this.nivel = nivel;
-        this.alive = true;
+    }
+
+    get nome() {
+        return this._nome;
     }
     get pv() {
-        return [this.pv.Atual, this.pv.Total];
+        return [this._pv.Atual, this._pv.Total];
     }
     set pv(num) {
         this._pv.Atual += num;
         if (this._pv.Atual > this._pv.Total) this._pv.Atual = this._pv.Total;
         else if (this._pv.Atual < 0) this._pv.Atual = 0;
     }
+
+    printPV() {
+        const vetorPV = this.pv;
+        let barraPV = `${this.nome} [HP: `;
+        for (let i = 0; i < vetorPV[1]; i++) {
+            i < vetorPV[0] ? (barraPV += '#') : (barraPV += ' ');
+        }
+        barraPV += ' ]';
+        return barraPV;
+    }
+
+    get ataque() {
+        return this._forca;
+    }
+
+    get defesa() {
+        return this._agilidade;
+    }
+
+    get arma() {
+        return this._equip.Arma;
+    }
+
+    get armadura() {
+        return this._equip.Armadura;
+    }
+
+    rolaDano() {
+        return rollaDado(this.arma) + this.ataque;
+    }
 }
 
 class Player extends Personagem {
     constructor(nome, classe) {
-        super(nome, this.alive);
+        super(nome);
         this._pv = { Atual: 0, Total: 0 };
         this._forca;
         this._agilidade;
-        this._equip = { Arma: 2, Armadura: 0 };
+        this._equip = { Arma: 0, Armadura: 0 };
         this.xp = 0;
-        this.level = 1;
+        this.nivel = 1;
+        this.alive = true;
 
         this.iniciaAtributos(classe);
     }
 
     iniciaAtributos(classe) {
-        this.equip[0] = 3;
+        this._equip.Arma = 2;
         if (classe === 'guarda') {
-            [this._pv.Atual, this._pv.Atual, this._forca, this._agilidade] = [
+            [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
                 9, 9, 3, 2,
             ];
         } else if (classe === 'bandido') {
-            [this._pv.Atual, this._pv.Atual, this._forca, this._agilidade] = [
+            [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
                 7, 7, 3, 4,
             ];
         } else {
-            [this._pv.Atual, this._pv.Atual, this._forca, this._agilidade] = [
+            [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
                 8, 8, 3, 3,
             ];
         }
@@ -179,7 +191,8 @@ class Monstro extends Personagem {
     static combates = [];
 
     constructor(nome, pv, forca, agilidade, equip, nivel) {
-        super(nome, pv, forca, agilidade, equip, nivel, this.alive);
+        super(nome, pv, forca, agilidade, equip, nivel);
+        this.alive = true;
 
         Monstro.combates.push(this.nome);
     }
@@ -206,16 +219,17 @@ function criarMonstro(nome) {
     for (let i = 0; i < lista.length; i++) {
         imprimeObjeto(lista[i]);
         if (lista[i].Nome === nome) {
-            const [a, b, c, d, e] = [
+            const [a, b, c, d, e, f] = [
                 lista[i].Atributos[0],
                 lista[i].Atributos[1],
                 lista[i].Atributos[2],
                 lista[i].Atributos[3],
                 lista[i].Atributos[4],
+                lista[i].Nivel,
             ];
             console.log(lista[i].Nome);
-            if (lista[i].Nome === 'Ogro') _monstro = new Ogro(a, b, c, d, e);
-            else _monstro = new Monstro(a, b, c, d, e);
+            if (lista[i].Nome === 'Ogro') _monstro = new Ogro(a, b, c, d, e, f);
+            else _monstro = new Monstro(a, b, c, d, e, f);
             return _monstro;
         }
     }
@@ -227,14 +241,14 @@ const rato = criarMonstro('Rato Gigante');
 // const ogro = criarMonstro('Ogro');
 
 // imprimeObjeto(rato);
+// imprimeObjeto(player);
 // imprimeObjeto(ogro);
 // imprimeObjeto(cela);
 // ogro.grita();
-// imprimeObjeto(player);
 // Sala.imprimeSalas();
 
-// console.log(Monstro.combates, Sala.num_salas);
-// console.log(monstros);
+console.log(Monstro.combates, Sala.num_salas);
+console.log(monstros);
 
 if (iniciaCombate(player, rato))
     console.log(`${player.nome} VENCEU O COMBATE!!!`);
