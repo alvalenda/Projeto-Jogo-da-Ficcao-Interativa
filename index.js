@@ -2,6 +2,7 @@ console.clear();
 const prompt = require('prompt-sync')();
 const { resolvePtr } = require('dns');
 const fs = require('fs');
+const { stdout } = require('process');
 
 let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 
@@ -36,44 +37,63 @@ function imprimeObjeto(objeto) {
     }
 }
 
+function barradeHP(objeto) {
+    const barra = [objeto.vida[0], objeto.vida[1]];
+    let vida = '[ ';
+    for (let i = 0; i < barra[1]; i++) {
+        i < barra[0] ? (vida += '#') : (vida += ' ');
+    }
+    vida += ' ]';
+    return vida;
+}
+
 function iniciaCombate(jogador, monstro) {
     let turno = 0;
     while (true) {
         console.clear();
-        console.log(
-            `\n${monstro.nome} HP [${monstro.vida[0]}/${monstro.vida[1]}] 
-            \n\n\n\n\n\n${jogador.nome} HP[${jogador.vida[0]}/${jogador.vida[1]}]\n`,
-        );
-        prompt(`\t[Atacar]\t[Fugir]`);
+        console.log(`\t${monstro.nome}\tHP `, barradeHP(monstro));
+        console.log(`\n\n\n\n\n\n`);
+        console.log(`\t${jogador.nome}\tHP `, barradeHP(jogador));
+
         const roll = rollaDado(20);
         console.log(roll);
-
+        prompt(`\tCombate: Turno ${turno + 1}`);
         if (turno % 2 === 0) {
             prompt(`${jogador.nome} tenta golpear ${monstro.nome}`);
             if (roll + jogador.ataque >= 10 + monstro.defesa) {
+                const dado = rollaDado(jogador.equip[0]);
                 const dano =
-                    jogador.ataque > monstro.defesa
-                        ? jogador.ataque - monstro.defesa
+                    dado + jogador.ataque > monstro.equip[1]
+                        ? dado + jogador.ataque - monstro.equip[1]
                         : 0;
-                prompt(`\t${jogador.nome} causou ${dano} pontos de dano.`);
+                prompt(
+                    `\t\t\t\tACERTOU!!! Você causou ${dano} pontos de dano!`,
+                );
                 monstro.mudaVida(-dano);
                 if (monstro.vida[0] <= 0) return true;
-            } else prompt(`\t${jogador.nome} errou...`);
-            turno++;
+            } else {
+                process.stdout.write(`\t\t\t\tERROU...`);
+                prompt();
+            }
         } else {
             prompt(`${monstro.nome} tenta acertar um golpe em ${jogador.nome}`);
-            console.log(roll);
             if (roll + monstro.ataque >= 10 + jogador.defesa) {
+                const dado = rollaDado(monstro.equip[0]);
                 const dano =
-                    monstro.ataque > jogador.defesa
-                        ? monstro.ataque - jogador.defesa
+                    dado + monstro.ataque > jogador.equip[1]
+                        ? dado + monstro.ataque - jogador.equip[1]
                         : 0;
-                prompt(`\t${monstro.nome} te causou ${dano} pontos de dano.`);
+                prompt(
+                    `\t\t\t\tACERTOU!!! Você sofreu ${dano} pontos de dano.`,
+                );
                 jogador.mudaVida(-dano);
                 if (player.vida[0] <= 0) return false;
-            } else prompt(`\t${monstro.nome} errou...`);
-            turno++;
+            } else {
+                process.stdout.write(`\t\t\t\tERROU..`);
+                prompt();
+            }
         }
+        turno++;
     }
 }
 
@@ -117,6 +137,7 @@ class Player {
         this.vida;
         this.ataque;
         this.defesa;
+        this.equip = [0, 0];
         this.level = 1;
         this.alive = true;
 
@@ -124,12 +145,13 @@ class Player {
     }
 
     iniciaAtributos(classe) {
+        this.equip[0] = 3;
         if (classe === 'Fordo') {
-            [this.vida, this.ataque, this.defesa] = [[8, 8], 3, 2];
+            [this.vida, this.ataque, this.defesa] = [[8, 8], 2, 2];
         } else if (classe === 'Magro') {
-            [this.vida, this.ataque, this.defesa] = [[6, 6], 5, 0];
+            [this.vida, this.ataque, this.defesa] = [[6, 6], 4, 0];
         } else {
-            [this.vida, this.ataque, this.defesa] = [[7, 7], 4, 1];
+            [this.vida, this.ataque, this.defesa] = [[7, 7], 3, 1];
         }
     }
 
@@ -145,11 +167,12 @@ class Player {
 class Monstro {
     static combates = [];
 
-    constructor(nome, vida, ataque, defesa) {
+    constructor(nome, vida, ataque, defesa, equip) {
         this.nome = nome;
         this.vida = [vida, vida];
         this.ataque = ataque;
         this.defesa = defesa;
+        this.equip = [equip[0], equip[1]];
         this.alive = true;
 
         Monstro.combates.push(this.nome);
@@ -178,15 +201,16 @@ function criarMonstro(nome) {
     for (let i = 0; i < lista.length; i++) {
         imprimeObjeto(lista[i]);
         if (lista[i].Nome === nome) {
-            const [a, b, c, d] = [
+            const [a, b, c, d, e] = [
                 lista[i].Atributos[0],
                 lista[i].Atributos[1],
                 lista[i].Atributos[2],
                 lista[i].Atributos[3],
+                lista[i].Atributos[4],
             ];
             console.log(lista[i].Nome);
-            if (lista[i].Nome === 'Ogro') _monstro = new Ogro(a, b, c, d);
-            else _monstro = new Monstro(a, b, c, d);
+            if (lista[i].Nome === 'Ogro') _monstro = new Ogro(a, b, c, d, e);
+            else _monstro = new Monstro(a, b, c, d, e);
             return _monstro;
         }
     }
