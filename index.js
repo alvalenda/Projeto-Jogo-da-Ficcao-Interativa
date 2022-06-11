@@ -95,13 +95,8 @@ function iniciaCombate(jogador, monstro) {
         turno++;
     }
 }
-
 /*
-    Trama
-*/
-
-/*
-    Começa o Jogo
+    CLASSES
 */
 class Sala {
     static num_salas = 0;
@@ -129,60 +124,64 @@ class Sala {
         }
     }
 }
-
-class Player {
-    constructor(nome, classe) {
-        this.nome = nome;
-        this.vida;
-        this.ataque;
-        this.defesa;
-        this.equip = [0, 0];
-        this.level = 1;
+class Personagem {
+    constructor(nome, pv, forca, agilidade, equip, nivel) {
+        this._nome = nome;
+        this._pv = { Atual: pv, Total: pv };
+        this._forca = forca;
+        this._agilidade = agilidade;
+        this._equip = { Arma: equip[0], Armadura: equip[1] };
+        this.nivel = nivel;
         this.alive = true;
+    }
+    get pv() {
+        return [this.pv.Atual, this.pv.Total];
+    }
+    set pv(num) {
+        this._pv.Atual += num;
+        if (this._pv.Atual > this._pv.Total) this._pv.Atual = this._pv.Total;
+        else if (this._pv.Atual < 0) this._pv.Atual = 0;
+    }
+}
+
+class Player extends Personagem {
+    constructor(nome, classe) {
+        super(nome, this.alive);
+        this._pv = { Atual: 0, Total: 0 };
+        this._forca;
+        this._agilidade;
+        this._equip = { Arma: 2, Armadura: 0 };
+        this.xp = 0;
+        this.level = 1;
 
         this.iniciaAtributos(classe);
     }
 
     iniciaAtributos(classe) {
         this.equip[0] = 3;
-        if (classe === 'Fordo') {
-            [this.vida, this.ataque, this.defesa] = [[9, 9], 2, 2];
-        } else if (classe === 'Magro') {
-            [this.vida, this.ataque, this.defesa] = [[7, 7], 4, 0];
+        if (classe === 'guarda') {
+            [this._pv.Atual, this._pv.Atual, this._forca, this._agilidade] = [
+                9, 9, 3, 2,
+            ];
+        } else if (classe === 'bandido') {
+            [this._pv.Atual, this._pv.Atual, this._forca, this._agilidade] = [
+                7, 7, 3, 4,
+            ];
         } else {
-            [this.vida, this.ataque, this.defesa] = [[8, 8], 3, 1];
+            [this._pv.Atual, this._pv.Atual, this._forca, this._agilidade] = [
+                8, 8, 3, 3,
+            ];
         }
-    }
-
-    mudaVida(num) {
-        this.vida[0] += num;
-        if (this.vida[0] > this.vida[1]) this.vida[0] = this.vida[1];
-        if (this.vida[0] <= 0) this.alive = false;
-
-        return this.alive;
     }
 }
 
-class Monstro {
+class Monstro extends Personagem {
     static combates = [];
 
-    constructor(nome, vida, ataque, defesa, equip) {
-        this.nome = nome;
-        this.vida = [vida, vida];
-        this.ataque = ataque;
-        this.defesa = defesa;
-        this.equip = [equip[0], equip[1]];
-        this.alive = true;
+    constructor(nome, pv, forca, agilidade, equip, nivel) {
+        super(nome, pv, forca, agilidade, equip, nivel, this.alive);
 
         Monstro.combates.push(this.nome);
-    }
-
-    mudaVida(num) {
-        this.vida[0] += num;
-        if (this.vida[0] > this.vida[1]) this.vida[0] = this.vida[1];
-        if (this.vida[0] <= 0) this.alive = false;
-
-        return this.alive;
     }
 }
 
@@ -193,6 +192,13 @@ class Ogro extends Monstro {
         );
     }
 }
+/*
+    Trama
+*/
+
+/*
+    Começa o Jogo
+*/
 
 function criarMonstro(nome) {
     const lista = monstros['Monstros'];
