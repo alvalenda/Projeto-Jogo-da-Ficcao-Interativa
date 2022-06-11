@@ -2,7 +2,7 @@
     "Monstros": [
         {
             "Nome": "Rato Gigante",
-            "Atributos": ["Rato Gigante", 7, 2, 1, [2, 1]],
+            "Atributos": ["Rato Gigante", 7, 1, 1, [2, 1]],
             "Nível": 1
         },
         {

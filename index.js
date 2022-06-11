@@ -57,7 +57,7 @@ function iniciaCombate(jogador, monstro) {
 
         const roll = rollaDado(20);
         console.log(roll);
-        prompt(`\tCombate: Turno ${turno + 1}`);
+        prompt(`Combate: Turno ${turno + 1}`);
         if (turno % 2 === 0) {
             prompt(`${jogador.nome} tenta golpear ${monstro.nome}`);
             if (roll + jogador.ataque >= 10 + monstro.defesa) {
@@ -67,16 +67,16 @@ function iniciaCombate(jogador, monstro) {
                         ? dado + jogador.ataque - monstro.equip[1]
                         : 0;
                 prompt(
-                    `\t\t\t\tACERTOU!!! Você causou ${dano} pontos de dano!`,
+                    `\t\t\t\t\tACERTOU!!! Você causou ${dano} pontos de dano!`,
                 );
                 monstro.mudaVida(-dano);
                 if (monstro.vida[0] <= 0) return true;
             } else {
-                process.stdout.write(`\t\t\t\tERROU...`);
+                process.stdout.write(`\t\t\t\t\tERROU...`);
                 prompt();
             }
         } else {
-            prompt(`${monstro.nome} tenta acertar um golpe em ${jogador.nome}`);
+            prompt(`${monstro.nome} tenta te acertar um golpe`);
             if (roll + monstro.ataque >= 10 + jogador.defesa) {
                 const dado = rollaDado(monstro.equip[0]);
                 const dano =
@@ -84,13 +84,12 @@ function iniciaCombate(jogador, monstro) {
                         ? dado + monstro.ataque - jogador.equip[1]
                         : 0;
                 prompt(
-                    `\t\t\t\tACERTOU!!! Você sofreu ${dano} pontos de dano.`,
+                    `\t\t\t\t\tACERTOU!!! Você sofreu ${dano} pontos de dano.`,
                 );
                 jogador.mudaVida(-dano);
                 if (player.vida[0] <= 0) return false;
             } else {
-                process.stdout.write(`\t\t\t\tERROU..`);
-                prompt();
+                prompt(`\t\t\t\t\tERROU...`);
             }
         }
         turno++;
