@@ -37,12 +37,36 @@ function imprimeObjeto(objeto) {
     }
 }
 
+function criarMonstro(nome) {
+    const lista = monstros['Monstros'];
+    let _monstro;
+    for (let i = 0; i < lista.length; i++) {
+        imprimeObjeto(lista[i]);
+        if (lista[i].Nome === nome) {
+            const [a, b, c, d, e, f, g] = [
+                lista[i].Atributos[0],
+                lista[i].Atributos[1],
+                lista[i].Atributos[2],
+                lista[i].Atributos[3],
+                lista[i].Atributos[4],
+                lista[i].Nivel,
+                lista[i].Arte,
+            ];
+            console.log(lista[i].Nome);
+            if (lista[i].Nome === 'Ogro')
+                _monstro = new Ogro(a, b, c, d, e, f, g);
+            else _monstro = new Monstro(a, b, c, d, e, f, g);
+            return _monstro;
+        }
+    }
+}
+
 function iniciaCombate(jogador, monstro) {
     let turno = 0;
     while (true) {
         console.clear();
         console.log(monstro.printPV());
-        console.log(`\n\n\n\n\n\n`);
+        console.log(monstro.arte);
         console.log(jogador.printPV());
 
         const roll = rollaDado(20);
@@ -190,11 +214,14 @@ class Player extends Personagem {
 class Monstro extends Personagem {
     static combates = [];
 
-    constructor(nome, pv, forca, agilidade, equip, nivel) {
+    constructor(nome, pv, forca, agilidade, equip, nivel, arte) {
         super(nome, pv, forca, agilidade, equip, nivel);
         this.alive = true;
-
+        this._arte = arte;
         Monstro.combates.push(this.nome);
+    }
+    get arte() {
+        return this._arte || 'monstro sem arte!';
     }
 }
 
@@ -213,31 +240,10 @@ class Ogro extends Monstro {
     Começa o Jogo
 */
 
-function criarMonstro(nome) {
-    const lista = monstros['Monstros'];
-    let _monstro;
-    for (let i = 0; i < lista.length; i++) {
-        imprimeObjeto(lista[i]);
-        if (lista[i].Nome === nome) {
-            const [a, b, c, d, e, f] = [
-                lista[i].Atributos[0],
-                lista[i].Atributos[1],
-                lista[i].Atributos[2],
-                lista[i].Atributos[3],
-                lista[i].Atributos[4],
-                lista[i].Nivel,
-            ];
-            console.log(lista[i].Nome);
-            if (lista[i].Nome === 'Ogro') _monstro = new Ogro(a, b, c, d, e, f);
-            else _monstro = new Monstro(a, b, c, d, e, f);
-            return _monstro;
-        }
-    }
-}
-
 const player = new Player(playerName(), 'Normal');
 // const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
-const rato = criarMonstro('Rato Gigante');
+// const rato = criarMonstro('Rato Gigante');
+const zumbi = criarMonstro('Zumbi');
 // const ogro = criarMonstro('Ogro');
 
 // imprimeObjeto(rato);
@@ -250,7 +256,7 @@ const rato = criarMonstro('Rato Gigante');
 console.log(Monstro.combates, Sala.num_salas);
 console.log(monstros);
 
-if (iniciaCombate(player, rato))
+if (iniciaCombate(player, zumbi))
     console.log(`${player.nome} VENCEU O COMBATE!!!`);
 else
     console.log(

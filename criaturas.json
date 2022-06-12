@@ -3,17 +3,20 @@
         {
             "Nome": "Rato Gigante",
             "Atributos": ["Rato Gigante", 7, 1, 1, [2, 1]],
-            "Nivel": 1
+            "Nivel": 1,
+            "Arte": "\r\n                       ,     .\r\n                       (\\,;,/)\r\n                        (o o)\\//,\r\n                         \\ /     \\,\r\n                         `+'(  (   \\    )\r\n                            //  \\   |_./\r\n                          '~' '~----'        "
         },
         {
             "Nome": "Zumbi",
-            "Atributos": ["Corpo Seco", 14, 5, 0, [5, 2]],
-            "Nivel": 2
+            "Atributos": ["Corpo Seco", 14, 3, 0, [2, 2]],
+            "Nivel": 2,
+            "Arte": "                                (()))\r\n                               /|x x|\r\n                              /\\( - )\r\n                      ___.-._/\\/\r\n                     /=`_'-'-'/  !!\r\n                     |-{-_-_-}     !\r\n                     (-{-_-_-}    !\r\n                      \\{_-_-_}   !\r\n                       }-_-_-}\r\n                       {-_|-_}\r\n                       {-_|_-}\r\n                       {_-|-_}\r\n                       {_-|-_}  \r\n                   ____%%@ @%%_______"
         },
         {
             "Nome": "Ogro",
             "Atributos": ["Blopiii", 72, 11, 3, [10, 4]],
-            "Nivel": 4
+            "Nivel": 4,
+            "Arte": ""
         }
     ]
 }
