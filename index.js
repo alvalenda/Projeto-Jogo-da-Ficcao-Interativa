@@ -1,8 +1,6 @@
 console.clear();
 const prompt = require('prompt-sync')();
-// const { resolvePtr } = require('dns');
 const fs = require('fs');
-// const { stdout } = require('process');
 
 let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 
@@ -16,10 +14,12 @@ let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 function playerName() {
     while (true) {
         try {
-            const nome = prompt(`Qual é o seu nome SOBREVIVENTE...? `);
+            const nome = prompt(`Qual é o seu nome SOBREVIVENTE...? `)
+                .trim()
+                .toLowerCase();
             if (nome.length < 3) throw `Seu nome deve é curto demais...`;
             else if (nome.length > 10) throw `Seu nome é longo demais...`;
-            return nome;
+            return nome[0].toUpperCase() + nome.substring(1);
         } catch (error) {}
     }
 }
@@ -79,11 +79,11 @@ function iniciaCombate(jogador, monstro) {
                 let dano = ataca.rolaDano();
                 dano = dano > defende.armadura ? dano - defende.armadura : 0;
                 prompt(
-                    `\t\t\t\t\tACERTO!\t${ataca.nome} causa ${dano} pontos de dano em ${defende.nome}`,
+                    `\t\t\t\tÉ UM ACERTO! \t${ataca.nome} causa ${dano} de dano no ${defende.nome}`,
                 );
                 defende.pv = -dano;
             } else {
-                process.stdout.write(`\t\t\t\t\tO Ataque errou...`);
+                process.stdout.write(`\t\t\t\t\tO ataque ERROU!!!`);
                 prompt();
             }
             return defende.pv[0];
@@ -150,11 +150,10 @@ class Personagem {
 
     printPV() {
         const vetorPV = this.pv;
-        let barraPV = `${this.nome} [HP: `;
+        let barraPV = `${this.nome} [PV] `;
         for (let i = 0; i < vetorPV[1]; i++) {
-            i < vetorPV[0] ? (barraPV += '#') : (barraPV += ' ');
+            i < vetorPV[0] ? (barraPV += '▓') : (barraPV += '░');
         }
-        barraPV += ' ]';
         return barraPV;
     }
 
