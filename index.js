@@ -20,7 +20,9 @@ function playerName() {
             if (nome.length < 3) throw `Seu nome deve é curto demais...`;
             else if (nome.length > 10) throw `Seu nome é longo demais...`;
             return nome[0].toUpperCase() + nome.substring(1);
-        } catch (error) {}
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 
@@ -65,22 +67,25 @@ function iniciaCombate(jogador, monstro) {
     let turno = 0;
     while (true) {
         console.clear();
+        console.log(`\t\tTurno ${turno + 1}\n`);
         console.log(monstro.printPV());
         console.log(monstro.arte);
         console.log(jogador.printPV());
 
         const roll = rollaDado(20);
         console.log(roll);
-        prompt(`Turno ${turno + 1}`);
+        prompt(`[ATACAR]\t[FUGIR]\n`);
 
         function resolveTurno(ataca, defende) {
-            prompt(`${ataca.nome} ATACA ${defende.nome}`);
+            prompt(`\n${ataca.nome} ATACA ${defende.nome}...`);
             if (roll + ataca.ataque >= 10 + defende.defesa) {
                 let dano = ataca.rolaDano();
                 dano = dano > defende.armadura ? dano - defende.armadura : 0;
-                prompt(
-                    `\t\t\t\tÉ UM ACERTO! \t${ataca.nome} causa ${dano} de dano no ${defende.nome}`,
-                );
+                ataca instanceof Player
+                    ? prompt(
+                          `\t\t\t\tÉ UM ACERTO! \tVocê causou ${dano} de dano no ${defende.nome}.`,
+                      )
+                    : prompt(`\t\t\t\tOutch! \tVocê sofreu ${dano} de dano.`);
                 defende.pv = -dano;
             } else {
                 process.stdout.write(`\t\t\t\t\tO ataque ERROU!!!`);
@@ -242,7 +247,7 @@ class Ogro extends Monstro {
 const player = new Player(playerName(), 'Normal');
 // const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
 
-const inimigo = criarMonstro('Ogro');
+const inimigo = criarMonstro('Zumbi');
 
 // imprimeObjeto(rato);
 // imprimeObjeto(player);
@@ -256,10 +261,5 @@ const inimigo = criarMonstro('Ogro');
 
 if (iniciaCombate(player, inimigo))
     console.log(`${player.nome} VENCEU O COMBATE!!!`);
-else
-    console.log(
-        `${player.nome} foi DERROTADO por ${
-            Monstro.combates[Monstro.combates.length - 1]
-        }`,
-    );
+else console.log(`${player.nome} foi DERROTADO por ${inimigo.nome}`);
 console.log();
