@@ -241,9 +241,8 @@ class Ogro extends Monstro {
 
 const player = new Player(playerName(), 'Normal');
 // const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
-// const rato = criarMonstro('Rato Gigante');
-const zumbi = criarMonstro('Zumbi');
-// const ogro = criarMonstro('Ogro');
+
+const inimigo = criarMonstro('Ogro');
 
 // imprimeObjeto(rato);
 // imprimeObjeto(player);
@@ -252,10 +251,10 @@ const zumbi = criarMonstro('Zumbi');
 // ogro.grita();
 // Sala.imprimeSalas();
 
-console.log(Monstro.combates, Sala.num_salas);
-console.log(monstros);
+// console.log(Monstro.combates, Sala.num_salas);
+// console.log(monstros);
 
-if (iniciaCombate(player, zumbi))
+if (iniciaCombate(player, inimigo))
     console.log(`${player.nome} VENCEU O COMBATE!!!`);
 else
     console.log(
