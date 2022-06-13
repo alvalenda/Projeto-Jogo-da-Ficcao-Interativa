@@ -117,11 +117,13 @@ class Sala {
     static num_salas = 0;
     static salas = [];
 
-    constructor(nome, salamae, inimigo) {
-        this.nome = nome;
+    constructor(salamae) {
+        this.nome = 'Sala' + String(num_salas + 1);
+        this._nivel = Math.floor(Sala.salas.length / 3) + 1;
         this.portas = { Mae: salamae, Filha: [] };
-        this.inimigo = inimigo;
+        this.guardiao;
 
+        this.criaGuardiao();
         this.criaSalaFilha();
         Sala.salas.push(this);
     }
@@ -129,7 +131,17 @@ class Sala {
     criaSalaFilha() {
         for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
             this.portas.Filha.push('Fechada');
-            Sala.num_salas += 1;
+        }
+        num_salas++;
+    }
+
+    criaGuardiao() {
+        for (i = 0; i < monstros.Monstros.length; i++) {
+            if (monstros.Monstros[i].Nivel === this.Nivel) {
+                const guardiao = monstros.Monstros[i].Nome;
+                this.guardiao = criarMonstro(guardiao);
+                return true;
+            }
         }
     }
 
@@ -139,6 +151,7 @@ class Sala {
         }
     }
 }
+
 class Personagem {
     constructor(nome, pv, forca, agilidade, equip = [0, 0], nivel) {
         this._nome = nome;
