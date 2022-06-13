@@ -63,6 +63,12 @@ function criarMonstro(nome) {
     }
 }
 
+function criarSala(indexmae) {
+    Sala.salas.push(new Sala(indexmae));
+    Sala.num_salas++;
+    return Sala.num_salas - 1;
+}
+
 function iniciaCombate(jogador, monstro) {
     let turno = 0;
     const primeiro = jogador.defesa >= monstro.defesa ? 0 : 1;
@@ -110,6 +116,12 @@ function iniciaCombate(jogador, monstro) {
         }
     }
 }
+
+function venceBatalha(jogador, nivel) {
+    jogador.xp += Math.round((Math.pow(nivel + 1, 2) * 5) / 2);
+}
+
+function perdeBatalha(jogador) {}
 /*
     CLASSES
 */
@@ -119,28 +131,19 @@ class Sala {
 
     constructor(salamae) {
         this.nome = 'Sala' + String(num_salas + 1);
+        this._pos = Sala.num_salas;
         this._nivel = Math.floor(Sala.salas.length / 3) + 1;
         this.portas = { Mae: salamae, Filha: [] };
         this.guardiao;
 
-        this.criaGuardiao();
-        this.criaSalaFilha();
-        Sala.salas.push(this);
-    }
-
-    criaSalaFilha() {
         for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
             this.portas.Filha.push('Fechada');
         }
-        num_salas++;
-    }
-
-    criaGuardiao() {
         for (i = 0; i < monstros.Monstros.length; i++) {
-            if (monstros.Monstros[i].Nivel === this.Nivel) {
+            if (monstros.Monstros[i].Nivel === this._nivel) {
                 const guardiao = monstros.Monstros[i].Nome;
                 this.guardiao = criarMonstro(guardiao);
-                return true;
+                break;
             }
         }
     }
@@ -149,6 +152,26 @@ class Sala {
         for (const sala of Sala.salas) {
             imprimeObjeto(sala);
         }
+    }
+
+    get index() {
+        return this._pos;
+    }
+
+    entraSala(jogador) {
+        this.guardiao.alive
+            ? this.combateSala(jogador)
+            : console.log(`Você entrou na ${this.nome}`);
+    }
+
+    combateSala(jogador) {
+        iniciaCombate(jogador, this.guardiao)
+            ? venceBatalha(jogador, this._nivel)
+            : perdeBatalha(jogador);
+    }
+
+    abrirPorta() {
+        entraSala(criarSala(this.index));
     }
 }
 
