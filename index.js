@@ -118,7 +118,7 @@ function iniciaCombate(jogador, monstro) {
     }
 }
 
-function menuDeAcoes(jogador, sala) {
+function menuDeSalas(jogador, sala) {
     const acoes = {
         0: false,
         1: false,
@@ -126,20 +126,22 @@ function menuDeAcoes(jogador, sala) {
         3: false,
         sair: true,
     };
-    if (sala.portas.Mae) acoes['0'] = true;
+    if (!isNaN(sala.portas.Mae)) acoes['0'] = true;
     if (sala.portas.Filha[0]) acoes['1'] = true;
     if (sala.portas.Filha[1]) acoes['2'] = true;
     if (sala.portas.Filha[2]) acoes['3'] = true;
 
     while (true) {
+        if (acoes['0'])
+            console.log(`\nVoltar para a Sala ${sala.portas.Mae + 1}: [0]`);
         console.log(
             `Portas disponíveis Para ir: ${acoes['1'] ? '[1]' : ''}  ${
                 acoes['2'] ? '[2]' : ''
-            }  ${acoes['3'] ? '[3]' : ''}\n`,
+            }  ${acoes['3'] ? '[3]' : ''}`,
         );
-        if (acoes['0']) console.log(`[0] - Para voltar para a Sala anterior!`);
+
         try {
-            const acao = prompt(`Qual acção deseja realizar?`)
+            const acao = prompt(`Qual ação deseja realizar? `)
                 .trim()
                 .toLowerCase();
             if (acoes[acao]) {
@@ -198,15 +200,15 @@ class Sala {
     static entraSala(jogador, index) {
         this.salas[index].guardiao.alive
             ? this.salas[index].combateSala(jogador)
-            : prompt(`Você entrou na ${this.salas[index].nome}`);
+            : prompt(`Você entrou na ${Sala.salas[index].nome}`);
 
         let acao;
         if (jogador.alive) {
-            acao = menuDeAcoes(jogador, this.salas[index]);
-            if (acao === '0')
-                return this.entraSala(this.salas[index].portas.Mae);
+            acao = menuDeSalas(jogador, this.salas[index]);
+            if (acao === '0') return this.salas[index].portas.Mae;
             else if (acao === 'sair') return 'sair';
-            else return this.salas[index].portas.Filha[Number(acao)];
+            else this.salas[index].portas.Filha[Number(acao)] = Sala.num_salas;
+            return Sala.num_salas;
         } else {
             prompt(
                 `É uma pena...\t${this.salas[index].guardiao.nome} era forte demais pra você...`,
@@ -343,17 +345,17 @@ class Ogro extends Monstro {
 
 function main() {
     const player = new Player(playerName(), 'Normal');
-    criarSala(false);
+    criarSala('SalaInicial');
     const index_sala = [0, 0];
     while (true) {
         index_sala[1] = Sala.entraSala(player, index_sala[0]);
 
         if (index_sala[1] === 'sair') break;
         else if (index_sala[1] === -1) break;
-        else if (index_sala[1] != index_sala[0]) {
-            index_sala[1] = criarSala(index_sala[0]);
-            index_sala[0] = index_sala[1];
-        }
+        else if (index_sala[1] > index_sala[0]) criarSala(index_sala[0]);
+        index_sala[0] = index_sala[1];
+
+        prompt(console.log(Sala.salas[index_sala[0]]));
     }
 }
 main();
