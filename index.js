@@ -94,12 +94,14 @@ function iniciaCombate(jogador, monstro) {
         }
         const roll = rollaDado(20);
         imprimeCombate();
-        console.log(roll);
-        prompt(`[ATACAR]\t[FUGIR]\n`);
+        // console.log(roll);
 
         turno % 2 === primeiro
-            ? resolveTurno(jogador, monstro)
-            : resolveTurno(monstro, jogador);
+            ? (console.log('\nÉ seu turno! O que deseja fazer?'),
+              prompt(`[ATACAR]\t[FUGIR]`),
+              resolveTurno(jogador, monstro))
+            : (prompt(`\n${monstro.nome} se prepara para agir`),
+              resolveTurno(monstro, jogador));
 
         if (jogador.alive && monstro.alive) turno++;
         else {
@@ -266,6 +268,6 @@ const inimigo = criarMonstro('Zumbi');
 // console.log(monstros);
 
 if (iniciaCombate(player, inimigo))
-    console.log(`${player.nome} VENCEU O COMBATE!!!`);
-else console.log(`${player.nome} foi DERROTADO por ${inimigo.nome}`);
+    console.log(`\n${player.nome} VENCEU O COMBATE!!!`);
+else console.log(`\n${player.nome} foi DERROTADO por ${inimigo.nome}`);
 console.log();
