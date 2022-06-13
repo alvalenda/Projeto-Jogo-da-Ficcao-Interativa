@@ -1,5 +1,6 @@
 console.clear();
 const prompt = require('prompt-sync')();
+const { Console } = require('console');
 const fs = require('fs');
 
 let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
@@ -117,11 +118,47 @@ function iniciaCombate(jogador, monstro) {
     }
 }
 
-function venceBatalha(jogador, nivel) {
-    jogador.xp += Math.round((Math.pow(nivel + 1, 2) * 5) / 2);
+function menuDeAcoes(jogador, sala) {
+    const acoes = {
+        0: false,
+        1: false,
+        2: false,
+        3: false,
+        sair: true,
+    };
+    if (sala.portas.Mae) acoes['0'] = true;
+    if (sala.portas.Filha[0]) acoes['1'] = true;
+    if (sala.portas.Filha[1]) acoes['2'] = true;
+    if (sala.portas.Filha[2]) acoes['3'] = true;
+
+    while (true) {
+        console.log(
+            `Portas disponíveis Para ir: ${acoes['1'] ? '[1]' : ''}  ${
+                acoes['2'] ? '[2]' : ''
+            }  ${acoes['3'] ? '[3]' : ''}\n`,
+        );
+        if (acoes['0']) console.log(`[0] - Para voltar para a Sala anterior!`);
+        try {
+            const acao = prompt(`Qual acção deseja realizar?`)
+                .trim()
+                .toLowerCase();
+            if (acoes[acao]) {
+                prompt(`\t\t\t\tindo para a porta ${acao}...`);
+                return acao;
+            }
+        } catch (error) {
+            Console.log(error);
+        }
+    }
 }
 
-function perdeBatalha(jogador) {}
+function venceBatalha(jogador, nivel) {
+    jogador.xp += 4 * nivel;
+}
+
+function perdeBatalha(jogador) {
+    prompt('Você foi derrotado!');
+}
 /*
     CLASSES
 */
@@ -130,7 +167,7 @@ class Sala {
     static salas = [];
 
     constructor(salamae) {
-        this.nome = 'Sala' + String(num_salas + 1);
+        this.nome = 'Sala' + String(Sala.num_salas + 1);
         this._pos = Sala.num_salas;
         this._nivel = Math.floor(Sala.salas.length / 3) + 1;
         this.portas = { Mae: salamae, Filha: [] };
@@ -139,7 +176,7 @@ class Sala {
         for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
             this.portas.Filha.push('Fechada');
         }
-        for (i = 0; i < monstros.Monstros.length; i++) {
+        for (let i = 0; i < monstros.Monstros.length; i++) {
             if (monstros.Monstros[i].Nivel === this._nivel) {
                 const guardiao = monstros.Monstros[i].Nome;
                 this.guardiao = criarMonstro(guardiao);
@@ -158,10 +195,24 @@ class Sala {
         return this._pos;
     }
 
-    entraSala(jogador) {
-        this.guardiao.alive
-            ? this.combateSala(jogador)
-            : console.log(`Você entrou na ${this.nome}`);
+    static entraSala(jogador, index) {
+        this.salas[index].guardiao.alive
+            ? this.salas[index].combateSala(jogador)
+            : prompt(`Você entrou na ${this.salas[index].nome}`);
+
+        let acao;
+        if (jogador.alive) {
+            acao = menuDeAcoes(jogador, this.salas[index]);
+            if (acao === '0')
+                return this.entraSala(this.salas[index].portas.Mae);
+            else if (acao === 'sair') return 'sair';
+            else return this.salas[index].portas.Filha[Number(acao)];
+        } else {
+            prompt(
+                `É uma pena...\t${this.salas[index].guardiao.nome} era forte demais pra você...`,
+            );
+            return -1;
+        }
     }
 
     combateSala(jogador) {
@@ -288,22 +339,36 @@ class Ogro extends Monstro {
     Começa o Jogo
 */
 
-const player = new Player(playerName(), 'Normal');
-// const cela = new Sala('Cela da Prisão', false, 'Rato Gigante');
+// Sala.imprimeSalas();
 
-const inimigo = criarMonstro('Zumbi');
+function main() {
+    const player = new Player(playerName(), 'Normal');
+    criarSala(false);
+    const index_sala = [0, 0];
+    while (true) {
+        index_sala[1] = Sala.entraSala(player, index_sala[0]);
+
+        if (index_sala[1] === 'sair') break;
+        else if (index_sala[1] === -1) break;
+        else if (index_sala[1] != index_sala[0]) {
+            index_sala[1] = criarSala(index_sala[0]);
+            index_sala[0] = index_sala[1];
+        }
+    }
+}
+main();
+//const inimigo = criarMonstro('Zumbi');
 
 // imprimeObjeto(rato);
 // imprimeObjeto(player);
 // imprimeObjeto(ogro);
 // imprimeObjeto(cela);
 // ogro.grita();
-// Sala.imprimeSalas();
 
 // console.log(Monstro.combates, Sala.num_salas);
 // console.log(monstros);
 
-if (iniciaCombate(player, inimigo))
-    console.log(`\n${player.nome} VENCEU O COMBATE!!!`);
-else console.log(`\n${player.nome} foi DERROTADO por ${inimigo.nome}`);
-console.log();
+// if (iniciaCombate(player, inimigo))
+//     console.log(`\n${player.nome} VENCEU O COMBATE!!!`);
+// else console.log(`\n${player.nome} foi DERROTADO por ${inimigo.nome}`);
+// console.log();
