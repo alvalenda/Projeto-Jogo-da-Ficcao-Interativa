@@ -65,17 +65,15 @@ function criarMonstro(nome) {
 
 function iniciaCombate(jogador, monstro) {
     let turno = 0;
+    const primeiro = jogador.defesa >= monstro.defesa ? 0 : 1;
     while (true) {
-        console.clear();
-        console.log(`\t\tTurno ${turno + 1}\n`);
-        console.log(monstro.printPV());
-        console.log(monstro.arte);
-        console.log(jogador.printPV());
-
-        const roll = rollaDado(20);
-        console.log(roll);
-        prompt(`[ATACAR]\t[FUGIR]\n`);
-
+        function imprimeCombate() {
+            console.clear();
+            console.log(`\t\tTurno ${turno + 1}\n`);
+            console.log(monstro.printPV());
+            console.log(monstro.arte);
+            console.log(jogador.printPV());
+        }
         function resolveTurno(ataca, defende) {
             prompt(`\n${ataca.nome} ATACA ${defende.nome}...`);
             if (roll + ataca.ataque >= 10 + defende.defesa) {
@@ -91,15 +89,23 @@ function iniciaCombate(jogador, monstro) {
                 process.stdout.write(`\t\t\t\t\tO ataque ERROU!!!`);
                 prompt();
             }
-            return defende.pv[0];
+            if (!defende.pv[0]) defende.alive = false;
+            return;
         }
+        const roll = rollaDado(20);
+        imprimeCombate();
+        console.log(roll);
+        prompt(`[ATACAR]\t[FUGIR]\n`);
 
-        if (turno % 2 === 0) {
-            if (!resolveTurno(jogador, monstro)) return true;
-        } else {
-            if (!resolveTurno(monstro, jogador)) return false;
+        turno % 2 === primeiro
+            ? resolveTurno(jogador, monstro)
+            : resolveTurno(monstro, jogador);
+
+        if (jogador.alive && monstro.alive) turno++;
+        else {
+            imprimeCombate();
+            return jogador.alive;
         }
-        turno++;
     }
 }
 /*
