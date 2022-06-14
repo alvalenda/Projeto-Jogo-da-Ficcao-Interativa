@@ -374,3 +374,12 @@ main();
 //     console.log(`\n${player.nome} VENCEU O COMBATE!!!`);
 // else console.log(`\n${player.nome} foi DERROTADO por ${inimigo.nome}`);
 // console.log();
+
+// n(n + 1)*5 => proximo nível && n(n - 1) => nível anterior
+// xp = 5i² + 5i  5i(i + 1) = 5i'(i + 1) + 5i(i + 1)' = 5(i + 1) + 5i(1) = 10i + 5
+// xp' = 10i + 5
+// pra subir com 2 monstros, 1 monstro = 0.5 dxp = [5i] + 2.5
+
+// xp necessário p/ lvlup de (x -> x+1) => 5i² + 5i - (5i² - 5i)
+// -> 5i² - 5i² + 5i + 5i -> 10i #
+// agora entendi
