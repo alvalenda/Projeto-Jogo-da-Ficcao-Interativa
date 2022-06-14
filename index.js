@@ -124,7 +124,7 @@ function menuDeSalas(jogador, sala) {
         1: false,
         2: false,
         3: false,
-        sair: true,
+        '-99': true,
     };
     if (!isNaN(sala.portas.Mae)) acoes['0'] = true;
     if (sala.portas.Filha[0]) acoes['1'] = true;
@@ -159,7 +159,7 @@ function venceBatalha(jogador, nivel) {
 }
 
 function perdeBatalha(jogador) {
-    prompt('Você foi derrotado!');
+    prompt(`${jogador.nome} foi derrotado!`);
 }
 /*
     CLASSES
@@ -169,7 +169,7 @@ class Sala {
     static salas = [];
 
     constructor(salamae) {
-        this.nome = 'Sala' + String(Sala.num_salas + 1);
+        this.nome = 'Sala ' + String(Sala.num_salas + 1);
         this._pos = Sala.num_salas;
         this._nivel = Math.floor(Sala.salas.length / 3) + 1;
         this.portas = { Mae: salamae, Filha: [] };
@@ -197,24 +197,23 @@ class Sala {
         return this._pos;
     }
 
+    setFilha(valor, index) {
+        this.portas.Filha[index - 1] = Number(valor);
+    }
+
+    getFilha(index) {
+        try {
+            const id_filha = this.portas.Filha[index - 1];
+            return id_filha;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     static entraSala(jogador, index) {
         this.salas[index].guardiao.alive
             ? this.salas[index].combateSala(jogador)
             : prompt(`Você entrou na ${Sala.salas[index].nome}`);
-
-        let acao;
-        if (jogador.alive) {
-            acao = menuDeSalas(jogador, this.salas[index]);
-            if (acao === '0') return this.salas[index].portas.Mae;
-            else if (acao === 'sair') return 'sair';
-            else this.salas[index].portas.Filha[Number(acao)] = Sala.num_salas;
-            return Sala.num_salas;
-        } else {
-            prompt(
-                `É uma pena...\t${this.salas[index].guardiao.nome} era forte demais pra você...`,
-            );
-            return -1;
-        }
     }
 
     combateSala(jogador) {
@@ -306,7 +305,7 @@ class Player extends Personagem {
             ];
         } else {
             [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
-                8, 8, 3, 3,
+                28, 28, 23, 23,
             ];
         }
     }
@@ -347,15 +346,35 @@ function main() {
     const player = new Player(playerName(), 'Normal');
     criarSala('SalaInicial');
     const index_sala = [0, 0];
-    while (true) {
-        index_sala[1] = Sala.entraSala(player, index_sala[0]);
 
-        if (index_sala[1] === 'sair') break;
-        else if (index_sala[1] === -1) break;
-        else if (index_sala[1] > index_sala[0]) criarSala(index_sala[0]);
+    loopPrincipal: while (true) {
+        Sala.entraSala(player, index_sala[0]);
+
+        if (player.alive) {
+            const acao = Number(menuDeSalas(player, Sala.salas[index_sala[0]]));
+            if (acao === 0)
+                index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
+            else if (acao > 0) {
+                if (Sala.salas[index_sala[0]].getFilha(acao) === 'Fechada') {
+                    Sala.salas[index_sala[0]].setFilha(Sala.num_salas, acao);
+                    index_sala[1] = Sala.num_salas;
+                    criarSala(index_sala[0]);
+                } else {
+                    index_sala[1] = Sala.salas[index_sala[0]].getFilha(acao);
+                }
+            } else index_sala[1] = acao;
+        } else {
+            prompt(
+                `É uma pena...\t${this.salas[index].guardiao.nome} era forte demais pra você...`,
+            );
+            index_sala[1] = -1;
+        }
+
+        if (index_sala[1] === -99) break loopPrincipal;
+        if (index_sala[1] === -1) break loopPrincipal;
+        console.log(index_sala[0], index_sala[1], 147);
         index_sala[0] = index_sala[1];
-
-        prompt(console.log(Sala.salas[index_sala[0]]));
+        prompt(Sala.salas[index_sala[0]]);
     }
 }
 main();
