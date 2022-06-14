@@ -327,9 +327,7 @@ class Monstro extends Personagem {
 
 class Ogro extends Monstro {
     grita() {
-        console.log(
-            `${this.nome} forte!!! ${this.nome} esmaga ${player.nome}!!!`,
-        );
+        console.log(`${this.nome} forte!!! ${this.nome} esmaga!!!`);
     }
 }
 /*
