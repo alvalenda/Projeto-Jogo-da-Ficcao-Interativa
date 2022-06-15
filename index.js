@@ -389,6 +389,7 @@ class Player extends Personagem {
     }
     set robustez(num) {
         this._robustez += num;
+        this.maxpv = num * 2;
     }
 
     get maxpv() {
@@ -430,17 +431,19 @@ class Player extends Personagem {
             );
             if (atr === 1) {
                 this.ataque = 1;
+                this.maxpv = 1;
                 prompt(
                     `\tSua Força aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
                 );
             } else if (atr === 2) {
                 this.defesa = 1;
+                this.maxpv = 1;
                 prompt(
                     `\tSua Agilidade aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
                 );
             } else {
                 this.robustez = 1;
-                this.maxpv = 2;
+                this.maxpv = 1;
                 prompt(
                     `\tSua Robustez aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 3 pts`,
                 );
