@@ -40,7 +40,7 @@ function criarMonstro(nome) {
     const lista = monstros['Monstros'];
     let _monstro;
     for (let i = 0; i < lista.length; i++) {
-        imprimeObjeto(lista[i]);
+        //imprimeObjeto(lista[i]);
         if (lista[i].Nome === nome) {
             const [a, b, c, d, e, f, g] = [
                 lista[i].Atributos[0],
@@ -51,7 +51,7 @@ function criarMonstro(nome) {
                 lista[i].Nivel,
                 lista[i].Arte,
             ];
-            console.log(lista[i].Nome);
+            //console.log(lista[i].Nome);
             if (lista[i].Nome === 'Ogro')
                 _monstro = new Ogro(a, b, c, d, e, f, g);
             else _monstro = new Monstro(a, b, c, d, e, f, g);
@@ -377,7 +377,7 @@ class Player extends Personagem {
         this._forca;
         this._agilidade;
         this._robustez;
-        this._equip = { Arma: 0, Armadura: 0 };
+        this._equip = { Arma: 2, Armadura: 0 };
         this._xp = 0;
         this.nivel = 1;
         this._race = race;
