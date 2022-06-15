@@ -1,6 +1,5 @@
 console.clear();
 const prompt = require('prompt-sync')();
-const { Console } = require('console');
 const fs = require('fs');
 
 let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
@@ -65,7 +64,9 @@ function criarMonstro(nome) {
 }
 
 function criarSala(indexmae) {
-    Sala.salas.push(new Sala(indexmae));
+    indexmae != 'SalaInicial'
+        ? Sala.salas.push(new Sala(indexmae))
+        : Sala.salas.push(new Cela(indexmae));
     Sala.num_salas++;
     return Sala.num_salas - 1;
 }
@@ -132,12 +133,37 @@ function menuDeSalas(jogador, sala) {
     if (sala.portas.Filha[2]) acoes['3'] = true;
 
     while (true) {
+        console.clear();
+        console.log('\t\nPORTAS DISPONÍVEIS PARA ABRIR1\n');
         if (acoes['0'])
-            console.log(`\nVoltar para a Sala ${sala.portas.Mae + 1}: [0]`);
+            console.log(
+                `Opção para RECUAR: \t[0] - ${
+                    sala.portas.Mae
+                        ? 'Sala ' + sala.portas.Mae
+                        : 'Cela da Prisão'
+                }`,
+            );
+        // // SE A PORTA EXISTE => FECHADA => SE FECHADA || IMPRIME Nº DA OPÇÃO + Nº DA SALA
         console.log(
-            `Portas disponíveis Para ir: ${acoes['1'] ? '[1]' : ''}  ${
-                acoes['2'] ? '[2]' : ''
-            }  ${acoes['3'] ? '[3]' : ''}`,
+            `Opções para AVANÇAR: \t${acoes['1'] ? '[1]' : ''} ${
+                acoes['1']
+                    ? sala.portas.Filha[0] === 'Fechada'
+                        ? '- Porta Fechada'
+                        : '- Sala ' + sala.portas.Filha[0]
+                    : ''
+            }  ${acoes['2'] ? '[2]' : ''} ${
+                acoes['2']
+                    ? sala.portas.Filha[1] === 'Fechada'
+                        ? '- Porta Fechada'
+                        : '- Sala ' + sala.portas.Filha[1]
+                    : ''
+            } ${acoes['3'] ? '[3]' : ''} ${
+                acoes['3']
+                    ? sala.portas.Filha[2] === 'Fechada'
+                        ? '- Porta Fechada'
+                        : '- Sala ' + sala.portas.Filha[2]
+                    : ''
+            }\n`,
         );
 
         try {
@@ -145,11 +171,21 @@ function menuDeSalas(jogador, sala) {
                 .trim()
                 .toLowerCase();
             if (acoes[acao]) {
-                prompt(`\t\t\t\tindo para a porta ${acao}...`);
+                prompt(
+                    `\t\t\t\t\t Você decidiu ir para a ${
+                        Number(acao)
+                            ? sala.portas.Filha[acao - 1] === 'Fechada'
+                                ? acao + 'ª Porta Fechada'
+                                : 'Porta da Sala ' + sala.portas.Filha[acao - 1]
+                            : sala.portas.Mae
+                            ? 'Sala ' + sala.portas.Mae
+                            : 'Cela da Prisão'
+                    }...`,
+                );
                 return acao;
             }
-        } catch (error) {
-            Console.log(error);
+        } catch (err) {
+            console.log(err);
         }
     }
 }
@@ -169,7 +205,7 @@ class Sala {
     static salas = [];
 
     constructor(salamae) {
-        this.nome = 'Sala ' + String(Sala.num_salas + 1);
+        this.nome = 'Sala ' + String(Sala.num_salas);
         this._pos = Sala.num_salas;
         this._nivel = Math.floor(Sala.salas.length / 3) + 1;
         this.portas = { Mae: salamae, Filha: [] };
@@ -224,6 +260,17 @@ class Sala {
 
     abrirPorta() {
         entraSala(criarSala(this.index));
+    }
+}
+
+class Cela extends Sala {
+    constructor(salamae) {
+        super();
+        this.nome = 'Cela de Prisão';
+        this._pos = Sala.num_salas;
+        this._nivel = 0;
+        this.portas = { Mae: salamae, Filha: ['Fechada'] };
+        this.guardiao = { alive: false };
     }
 }
 
