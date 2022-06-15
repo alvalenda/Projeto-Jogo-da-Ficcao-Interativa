@@ -78,6 +78,12 @@ function iniciaCombate(jogador, monstro) {
             console.log(monstro.printPV());
             console.log(monstro.arte);
             console.log(jogador.printPV());
+            console.log(
+                `\nRaça ${jogador.race}\tNível ${jogador.nivel} \t${jogador.xp} XP`,
+            );
+            console.log(
+                `Força ${jogador.ataque}\tAgilidade ${jogador.defesa}\tRobustez ${jogador.robustez}`,
+            );
         }
         function resolveTurno(ataca, defende) {
             prompt(`\n${ataca.nome} ATACA ${defende.nome}...`);
@@ -131,7 +137,7 @@ function menuDeSalas(jogador, sala) {
 
     while (true) {
         console.clear();
-        console.log('\t\nPORTAS DISPONÍVEIS PARA ABRIR1\n');
+        console.log('\t\nPORTAS DISPONÍVEIS PARA ABRIR\n');
         if (acoes['0'])
             console.log(
                 `Opção para RECUAR: \t[0] - ${
@@ -187,8 +193,24 @@ function menuDeSalas(jogador, sala) {
     }
 }
 
+function menuDeSelecao(menu, a, b, c) {
+    console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}\n`);
+    while (true) {
+        try {
+            const selecao = parseInt(prompt(`Número da ${menu} escolhida: `));
+            if (isNaN(selecao) || selecao < 1 || selecao > 3)
+                throw `\t\t\t\tOpção inválida! Entre com 1, 2 ou 3.`;
+            return selecao;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
 function venceBatalha(jogador, nivel) {
-    jogador.xp += 4 * nivel;
+    const xp = 4 * nivel;
+    prompt(`\n\tVocê venceu a Batalha!\t ${xp} pts de experiência obtidos`);
+    jogador.xp = xp;
 }
 
 function perdeBatalha(jogador) {
@@ -251,7 +273,7 @@ class Sala {
 
     combateSala(jogador) {
         iniciaCombate(jogador, this.guardiao)
-            ? venceBatalha(jogador, this._nivel)
+            ? venceBatalha(jogador, this.guardiao.nivel)
             : perdeBatalha(jogador);
     }
 
@@ -295,7 +317,7 @@ class Personagem {
 
     printPV() {
         const vetorPV = this.pv;
-        let barraPV = `${this.nome} [PV] `;
+        let barraPV = `${this.nome}: [PV] `;
         for (let i = 0; i < vetorPV[1]; i++) {
             i < vetorPV[0] ? (barraPV += '▓') : (barraPV += '░');
         }
@@ -306,16 +328,32 @@ class Personagem {
         return this._forca;
     }
 
+    set ataque(num) {
+        this._forca += num;
+    }
+
     get defesa() {
         return this._agilidade;
+    }
+
+    set defesa(num) {
+        this._agilidade += num;
     }
 
     get arma() {
         return this._equip.Arma;
     }
 
+    set arma(num) {
+        this._equip.Arma += num;
+    }
+
     get armadura() {
         return this._equip.Armadura;
+    }
+
+    set armadura(num) {
+        this._equip.Armadura += num;
     }
 
     rolaDano() {
@@ -324,34 +362,103 @@ class Personagem {
 }
 
 class Player extends Personagem {
-    constructor(nome, classe) {
+    constructor(nome, race) {
         super(nome);
         this._pv = { Atual: 0, Total: 0 };
         this._forca;
         this._agilidade;
+        this._robustez;
         this._equip = { Arma: 0, Armadura: 0 };
-        this.xp = 0;
+        this._xp = 0;
         this.nivel = 1;
+        this._race = race;
         this.alive = true;
 
-        this.iniciaAtributos(classe);
+        this.iniciaAtributos(this._race);
+    }
+    get race() {
+        return this._race;
     }
 
-    iniciaAtributos(classe) {
-        this._equip.Arma = 2;
-        if (classe === 'guarda') {
-            [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
-                9, 9, 3, 2,
-            ];
-        } else if (classe === 'bandido') {
-            [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
-                7, 7, 3, 4,
-            ];
-        } else {
-            [this._pv.Atual, this._pv.Total, this._forca, this._agilidade] = [
-                28, 28, 23, 23,
-            ];
+    get robustez() {
+        return this._robustez;
+    }
+    set robustez(num) {
+        this._robustez += num;
+    }
+
+    get maxpv() {
+        return this._pv.Total;
+    }
+
+    set maxpv(num) {
+        this._pv.Total += num;
+        this.pv = num;
+    }
+
+    get xp() {
+        return this._xp;
+    }
+    set xp(num) {
+        this._xp += num;
+        this.subirLVL(this._xp);
+    }
+
+    subirLVL(xp) {
+        const n = this.nivel;
+        const nextLVL = 5 * n * (n + 1);
+        console.log(n, nextLVL);
+        if (xp >= nextLVL) {
+            this.nivel++;
+            console.clear();
+            prompt(`\n\tVOCE AVANÇOU PARA O NÍVEL ${this.nivel}`);
+            console.log(
+                'Você tem',
+                1,
+                'ponto para evoluir um atributo.',
+                'Qual atributo você deseja evoluir?\n',
+            );
+            const atr = menuDeSelecao(
+                'opção',
+                'Força',
+                'Agilidade',
+                'Robustez',
+            );
+            if (atr === 1) {
+                this.ataque = 1;
+                prompt(
+                    `\tSua Força aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
+                );
+            } else if (atr === 2) {
+                this.defesa = 1;
+                prompt(
+                    `\tSua Agilidade aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
+                );
+            } else {
+                this.robustez = 1;
+                this.maxpv = 2;
+                prompt(
+                    `\tSua Robustez aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 3 pts`,
+                );
+            }
         }
+    }
+
+    iniciaAtributos(race) {
+        this._equip.Arma = 2;
+        if (race === 'Anão') {
+            [this._forca, this._agilidade, this._robustez] = [3, 2, 4];
+        } else if (race === 'Elfo') {
+            [this._forca, this._agilidade, this._robustez] = [2, 4, 3];
+        } else if (race === 'Humano') {
+            [this._forca, this._agilidade, this._robustez] = [3, 3, 3];
+        } else {
+            [this._forca, this._agilidade, this._robustez] = [25, 25, 25];
+        }
+        [this._pv.Atual, this._pv.Total] = [
+            this._robustez * 2 + 1,
+            this._robustez * 2 + 1,
+        ];
     }
 }
 
@@ -382,7 +489,7 @@ class Ogro extends Monstro {
    COMEÇA O JOGO:: MAIN()
 */
 function main() {
-    const player = new Player(playerName(), 'Normal');
+    const player = new Player(playerName(), 'DEUS');
     criarSala('SalaInicial');
     const index_sala = [0, 0];
 
