@@ -83,10 +83,21 @@ function iniciaCombate(jogador, monstro, tempo) {
             console.log(monstro.arte);
             console.log(jogador.printPV());
             console.log(
-                `\nRaça ${jogador.race}\tNível ${jogador.nivel} \t${jogador.xp} XP`,
+                `\nRaça ${jogador.race}\tNível ${jogador.nivel} \tXP Total ${jogador.xp}`,
+            );
+            // console.log(
+            //     `Força ${jogador.ataque} \tAgilidade ${jogador.defesa}\tRobustez ${jogador.robustez}`,
+            // );
+            console.log(
+                `Força     ${jogador.ataque}\tVida Máx ${jogador.maxpv}\tSucatas  ${jogador.sucata}`,
             );
             console.log(
-                `Força ${jogador.ataque} \tAgilidade ${jogador.defesa}\tRobustez ${jogador.robustez}`,
+                `Agilidade ${jogador.defesa}\tArma     ${
+                    jogador.arma - 2
+                }\tBandagem ${jogador.bandagem}`,
+            );
+            console.log(
+                `Robustez  ${jogador.robustez}\tArmadura ${jogador.armadura}\tPoção    ${jogador.pocao}`,
             );
         }
         function resolveTurno(ataca, defende) {
@@ -218,8 +229,12 @@ function menuDeSelecao(menu, a, b, c) {
 
 function venceBatalha(jogador, nivel) {
     const xp = 4 * nivel;
-    prompt(`\n\tVocê venceu a Batalha!\t ${xp} pts de experiência obtidos`);
+    const su = rollaDado(2) + rollaDado(2) + nivel;
+    prompt(
+        `\n\tVocê venceu a Batalha!\t ${xp} pontos de experiência obtidos\n\t\t\t\t ${su} sucatas encontradas na sala`,
+    );
     jogador.xp = xp;
+    jogador.sucata = su;
 }
 
 function perdeBatalha(jogador) {
@@ -378,9 +393,11 @@ class Player extends Personagem {
         this._agilidade;
         this._robustez;
         this._equip = { Arma: 2, Armadura: 0 };
+        this._item = { Bandagem: 0, Pocao: 0 };
         this._xp = 0;
         this.nivel = 1;
         this._race = race;
+        this._sucata = 0;
         this.alive = true;
 
         this.iniciaAtributos(this._race);
@@ -388,7 +405,6 @@ class Player extends Personagem {
     get race() {
         return this._race;
     }
-
     get robustez() {
         return this._robustez;
     }
@@ -396,22 +412,53 @@ class Player extends Personagem {
         this._robustez += num;
         this.maxpv = num * 2;
     }
-
     get maxpv() {
         return this._pv.Total;
     }
-
     set maxpv(num) {
         this._pv.Total += num;
         this.pv = num;
     }
-
+    get sucata() {
+        return this._sucata;
+    }
+    set sucata(num) {
+        this._sucata += num;
+    }
+    get bandagem() {
+        return this._item.Bandagem;
+    }
+    set bandagem(num) {
+        this._item.Bandagem += num;
+    }
+    get pocao() {
+        return this._item.Pocao;
+    }
+    set pocao(num) {
+        this._item.Pocao += num;
+    }
     get xp() {
         return this._xp;
     }
     set xp(num) {
         this._xp += num;
         this.subirLVL(this._xp);
+    }
+
+    usarSucata(item) {
+        if (item === 'Arma') {
+            this.sucata >= this.arma + 3
+                ? ((this.sucata = -(this.arma + 3)), (this.arma = 1))
+                : prompt(`\t\t\t\tSucatas insuficientes!`);
+        } else if (item === 'Armadura') {
+            this.sucata >= this.armadura + 5
+                ? ((this.sucata = -(this.armadura + 5)), (this.armadura = 1))
+                : prompt(`\t\t\t\tSucatas insuficientes!`);
+        } else if (item === 'Bandagem') {
+            this.sucata >= 2
+                ? ((this.sucata = -5), (this.sucata = 1))
+                : prompt(`\t\t\t\tSucatas insuficientes!`);
+        }
     }
 
     subirLVL(xp) {
