@@ -1,15 +1,12 @@
 console.clear();
 const prompt = require('prompt-sync')();
 const fs = require('fs');
-
-let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
-
 /*
-    Variáveis Globais
+    VARIÁVEIS GLOBAIS
 */
-
+let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 /*
-    Funções
+    FUNÇÕES
 */
 function playerName() {
     while (true) {
@@ -378,15 +375,12 @@ class Ogro extends Monstro {
     }
 }
 /*
-    Trama
+    TRAMA
 */
 
 /*
-    Começa o Jogo
+   COMEÇA O JOGO:: MAIN()
 */
-
-// Sala.imprimeSalas();
-
 function main() {
     const player = new Player(playerName(), 'Normal');
     criarSala('SalaInicial');
