@@ -68,13 +68,17 @@ function criarSala(indexmae) {
     return Sala.num_salas - 1;
 }
 
-function iniciaCombate(jogador, monstro) {
+function iniciaCombate(jogador, monstro, tempo) {
     let turno = 0;
     const primeiro = jogador.defesa >= monstro.defesa ? 0 : 1;
     while (true) {
         function imprimeCombate() {
             console.clear();
-            console.log(`\t\tTurno ${turno + 1}\n`);
+            console.log(
+                `\t\tAções Realizadas ${tempo}\n\t\t   Combate Turno ${
+                    turno + 1
+                }`,
+            );
             console.log(monstro.printPV());
             console.log(monstro.arte);
             console.log(jogador.printPV());
@@ -122,7 +126,7 @@ function iniciaCombate(jogador, monstro) {
     }
 }
 
-function menuDeSalas(jogador, sala) {
+function menuDeSalas(sala, tempo) {
     const acoes = {
         0: false,
         1: false,
@@ -137,6 +141,7 @@ function menuDeSalas(jogador, sala) {
 
     while (true) {
         console.clear();
+        console.log(`\t\tAções Realizadas ${tempo}\n\n\n\n\n`);
         console.log('\t\nPORTAS DISPONÍVEIS PARA ABRIR\n');
         if (acoes['0'])
             console.log(
@@ -269,14 +274,14 @@ class Sala {
         }
     }
 
-    static entraSala(jogador, index) {
+    static entraSala(index, jogador, tempo) {
         this.salas[index].guardiao.alive
-            ? this.salas[index].combateSala(jogador)
+            ? this.salas[index].combateSala(jogador, tempo)
             : prompt(`Você entrou na ${Sala.salas[index].nome}`);
     }
 
-    combateSala(jogador) {
-        iniciaCombate(jogador, this.guardiao)
+    combateSala(jogador, tempo) {
+        iniciaCombate(jogador, this.guardiao, tempo)
             ? venceBatalha(jogador, this.guardiao.nivel)
             : perdeBatalha(jogador);
     }
@@ -503,12 +508,13 @@ function main() {
     );
     criarSala('SalaInicial');
     const index_sala = [0, 0];
+    let tempo = 0;
 
     loopPrincipal: while (true) {
-        Sala.entraSala(player, index_sala[0]);
+        Sala.entraSala(index_sala[0], player, tempo);
 
         if (player.alive) {
-            const acao = Number(menuDeSalas(player, Sala.salas[index_sala[0]]));
+            const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], tempo));
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
             else if (acao > 0) {
@@ -533,25 +539,11 @@ function main() {
         if (index_sala[1] === -1) break loopPrincipal;
         console.log(index_sala[0], index_sala[1], 147);
         index_sala[0] = index_sala[1];
+        tempo += 1;
         prompt(Sala.salas[index_sala[0]]);
     }
 }
 main();
-//const inimigo = criarMonstro('Zumbi');
-
-// imprimeObjeto(rato);
-// imprimeObjeto(player);
-// imprimeObjeto(ogro);
-// imprimeObjeto(cela);
-// ogro.grita();
-
-// console.log(Monstro.combates, Sala.num_salas);
-// console.log(monstros);
-
-// if (iniciaCombate(player, inimigo))
-//     console.log(`\n${player.nome} VENCEU O COMBATE!!!`);
-// else console.log(`\n${player.nome} foi DERROTADO por ${inimigo.nome}`);
-// console.log();
 
 // n(n + 1)*5 => proximo nível && n(n - 1) => nível anterior
 // xp necessário p/ lvlup de (n -> n+1) => 5n² + 5n - (5n² - 5n)
