@@ -82,14 +82,14 @@ function iniciaCombate(jogador, monstro) {
                 `\nRaça ${jogador.race}\tNível ${jogador.nivel} \t${jogador.xp} XP`,
             );
             console.log(
-                `Força ${jogador.ataque}\tAgilidade ${jogador.defesa}\tRobustez ${jogador.robustez}`,
+                `Força ${jogador.ataque} \tAgilidade ${jogador.defesa}\tRobustez ${jogador.robustez}`,
             );
         }
         function resolveTurno(ataca, defende) {
-            prompt(`\n${ataca.nome} ATACA ${defende.nome}...`);
+            prompt(`${ataca.nome} ATACA ${defende.nome}...`);
             if (roll + ataca.ataque >= 10 + defende.defesa) {
                 let dano = ataca.rolaDano();
-                dano = dano > defende.armadura ? dano - defende.armadura : 0;
+                dano = dano > defende.armadura ? dano - defende.armadura : 1;
                 ataca instanceof Player
                     ? prompt(
                           `\t\t\t\tÉ UM ACERTO! \tVocê causou ${dano} de dano no ${defende.nome}.`,
@@ -97,7 +97,7 @@ function iniciaCombate(jogador, monstro) {
                     : prompt(`\t\t\t\tOutch! \tVocê sofreu ${dano} de dano.`);
                 defende.pv = -dano;
             } else {
-                process.stdout.write(`\t\t\t\t\tO ataque ERROU!!!`);
+                process.stdout.write(`\t\t\t\t\tO ataque ERROU!!!`); // colocar o prompt de baixo aqui
                 prompt();
             }
             if (!defende.pv[0]) defende.alive = false;
@@ -109,7 +109,7 @@ function iniciaCombate(jogador, monstro) {
 
         turno % 2 === primeiro
             ? (console.log('\nÉ seu turno! O que deseja fazer?'),
-              prompt(`[ATACAR]\t[FUGIR]`),
+              prompt(`[ATACAR]\t[FUGIR]\n`),
               resolveTurno(jogador, monstro))
             : (prompt(`\n${monstro.nome} se prepara para agir`),
               resolveTurno(monstro, jogador));
@@ -197,9 +197,13 @@ function menuDeSelecao(menu, a, b, c) {
     console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}\n`);
     while (true) {
         try {
-            const selecao = parseInt(prompt(`Número da ${menu} escolhida: `));
+            let selecao = parseInt(prompt(`Número da ${menu} escolhida: `));
             if (isNaN(selecao) || selecao < 1 || selecao > 3)
                 throw `\t\t\t\tOpção inválida! Entre com 1, 2 ou 3.`;
+            if (menu === 'RAÇA') {
+                selecao =
+                    selecao === 1 ? 'Humano' : selecao === 2 ? 'Anão' : 'Elfo';
+            }
             return selecao;
         } catch (err) {
             console.log(err);
@@ -226,7 +230,7 @@ class Sala {
     constructor(salamae) {
         this.nome = 'Sala ' + String(Sala.num_salas);
         this._pos = Sala.num_salas;
-        this._nivel = Math.floor(Sala.salas.length / 3) + 1;
+        this._nivel = Math.floor(Sala.salas.length / 4) + 1;
         this.portas = { Mae: salamae, Filha: [] };
         this.guardiao;
 
@@ -453,6 +457,7 @@ class Player extends Personagem {
         } else if (race === 'Humano') {
             [this._forca, this._agilidade, this._robustez] = [3, 3, 3];
         } else {
+            // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
             [this._forca, this._agilidade, this._robustez] = [25, 25, 25];
         }
         [this._pv.Atual, this._pv.Total] = [
@@ -489,7 +494,10 @@ class Ogro extends Monstro {
    COMEÇA O JOGO:: MAIN()
 */
 function main() {
-    const player = new Player(playerName(), 'DEUS');
+    const player = new Player(
+        playerName(),
+        menuDeSelecao('RAÇA', 'Humano', 'Anão', 'Elfo'),
+    );
     criarSala('SalaInicial');
     const index_sala = [0, 0];
 
@@ -511,7 +519,9 @@ function main() {
             } else index_sala[1] = acao;
         } else {
             prompt(
-                `É uma pena...\t${this.salas[index].guardiao.nome} era forte demais pra você...`,
+                `É uma pena...\t${
+                    Sala.salas[index_sala[0]].guardiao.nome
+                } era forte demais pra você...`,
             );
             index_sala[1] = -1;
         }
@@ -541,10 +551,6 @@ main();
 // console.log();
 
 // n(n + 1)*5 => proximo nível && n(n - 1) => nível anterior
-// xp = 5i² + 5i  5i(i + 1) = 5i'(i + 1) + 5i(i + 1)' = 5(i + 1) + 5i(1) = 10i + 5
-// xp' = 10i + 5
-// pra subir com 2 monstros, 1 monstro = 0.5 dxp = [5i] + 2.5
-
-// xp necessário p/ lvlup de (x -> x+1) => 5i² + 5i - (5i² - 5i)
-// -> 5i² - 5i² + 5i + 5i -> 10i #
-// agora entendi
+// xp necessário p/ lvlup de (n -> n+1) => 5n² + 5n - (5n² - 5n)
+// -> 5n² - 5n² + 5n + 5n -> 10n #
+// Por enquanto deixarei o Level up! a cada 2.5 monstros do próprio nível (10*n / 2.5) => 4*n #
