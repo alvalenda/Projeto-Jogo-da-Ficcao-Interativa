@@ -367,7 +367,7 @@ class Sala {
             ? this.salas[index].combateSala(jogador, tempo)
             : prompt(`Você entrou na ${Sala.salas[index].nome}`);
 
-        if (index || acoes < 3) {
+        if (index && acoes < 3 && jogador.alive) {
             console.log(
                 `\n\nComo o monstro foi derrotado, você pode fazer algo antes de prosseguir...\n`,
             );
@@ -376,11 +376,13 @@ class Sala {
                 console.log(
                     `\t\t\t\t\t${
                         Sala.salas[index].nome
-                    }\n\n${jogador.printPV()}\nSucatas: ${jogador.sucata}\n`,
+                    }\n\n${jogador.printPV()}\nSucatas:  ${
+                        jogador.sucata
+                    }\nBandagens: ${jogador.bandagem}\n`,
                 );
                 const menu = menuDeSelecao(
                     'Ação de Sala',
-                    'Criar Bandagem',
+                    'Criar Bandagem\t\tCusta 2 sucatas',
                     'Usar Bandagem',
                     'Continuar Explorando',
                 );
@@ -394,6 +396,7 @@ class Sala {
                     );
                     break loopMenuSala;
                 }
+                console.clear();
             }
         }
     }
@@ -579,7 +582,7 @@ class Player extends Personagem {
 
     usarItem(item) {
         if (item === 'Bandagem') {
-            const cura = rollaDado(4) + this.nivel;
+            const cura = rollaDado(3) + this.nivel;
             this.bandagem
                 ? ((this.bandagem = -1),
                   (this.pv = cura),
