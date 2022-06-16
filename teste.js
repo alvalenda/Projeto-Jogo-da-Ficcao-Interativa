@@ -52,24 +52,33 @@ function retornaMsgComIntervalo(msg, intervalo) {
     });
 }
 
-async function exibirComPausa(listadeMsg, dt = 1.5) {
+async function exibirComPausa(listadeMsg, dt = 0.03) {
     for (const msg of listadeMsg) {
-        console.log(await retornaMsgComIntervalo(msg, dt));
+        process.stdout.write(await retornaMsgComIntervalo(msg, dt));
     }
 }
 
-async function imprimeComPausa(msg, dt = 2) {
-    console.log(
-        await new Promise(resolve => {
-            setTimeout(() => {
-                resolve(msg);
-            }, dt * 1000);
-        }),
-    );
+async function imprimeComPausa(msg, dt = 0.02) {
+    for (const element of msg) {
+        process.stdout.write(
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(element);
+                }, dt * 1000);
+            }),
+        );
+    }
 }
 
-console.log('Mensagem 1');
-exibirComPausa(['Mensagem 2']);
-console.log('Mensagem 3');
-console.log('Mensagem 4');
-imprimeComPausa('Mensagem 5');
+// console.log('Mensagem 1');
+// exibirComPausa(['Mensagem 2']);
+// console.log('Mensagem 3');
+// console.log('Mensagem 4');
+// imprimeComPausa('Mensagem 5\n');
+const dia = 0;
+
+imprimeComPausa(`\t\t    Você procura um canto e se cobre com escombros, você dorme. 
+                    Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
+                    O dia ${
+                        dia + 1
+                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
