@@ -667,13 +667,13 @@ function main() {
         // prompt(Sala.salas[index_sala[0]]);
         Sala.entraSala(index_sala[0], player, dia);
 
-        if (acoes === 3) {
-            iniciaDormir(player, dia);
-            dia++;
-            acoes = 0;
-        }
-
         if (player.alive) {
+            // SE VIVO DORME
+            if (acoes === 3) {
+                iniciaDormir(player, dia);
+                dia++;
+                acoes = 0;
+            }
             const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], dia));
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
