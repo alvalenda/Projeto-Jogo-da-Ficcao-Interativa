@@ -75,9 +75,7 @@ function iniciaCombate(jogador, monstro, tempo) {
         function imprimeCombate() {
             console.clear();
             console.log(
-                `\t\tAções Realizadas ${tempo}\n\t\t   Combate Turno ${
-                    turno + 1
-                }`,
+                `\t\t\tDIA ${tempo}\n\t\t   Combate Turno ${turno + 1}`,
             );
             console.log(monstro.printPV());
             console.log(monstro.arte);
@@ -137,6 +135,69 @@ function iniciaCombate(jogador, monstro, tempo) {
     }
 }
 
+function iniciaDormir(jogador, dia) {
+    while (true) {
+        console.clear();
+        console.log(`\n\tÉ muito difícil perceber a passagem do tempo dentro das montanhas, 
+        mas seu corpo esta gritando alto em seus ouvidos que este dia acabou.\n
+        O dia ${dia} da sua fuga foi longo e cansativo, está na hora de parar e dar um descanso pro seu corpo...\n\n\n
+        Antes de dormir você pode converter suas sucatas para aperfeiçoar sua arma, armadura, 
+        fazer bandagens e curativos. Quando terminar basta ir na Opção Dormir.\n\n`);
+        console.log(jogador.printPV());
+        console.log(
+            `\nTotal de Sucatas ${jogador.sucata}\n\nAções Disponíveis:`,
+        );
+        console.log(`[1] - Melhorar Arma     \tcusto ${jogador.arma + 5 - 2}`);
+        console.log(`[2] - Melhorar Armadura \tcusto ${jogador.armadura + 5}`);
+        console.log(`[3] - Criar Bandagem    \tcusto ${2}`);
+        console.log(`[4] - Aplicar Bandagem  \ttotal ${jogador.bandagem}`);
+        console.log(`[5] - Comer os Inimigos \ttotal ${jogador.inimigos}`);
+        console.log(`[6] - DORMIR!\n`);
+        try {
+            const opcao = parseInt(prompt(`Realizar qual Ação? `));
+            if (isNaN(opcao) || opcao < 1 || opcao > 6)
+                throw `\t\t\t\topção inválida! digite o número da opção escolhida`;
+
+            switch (opcao) {
+                case 1:
+                    jogador.usarSucata('Arma');
+                    break;
+
+                case 2:
+                    jogador.usarSucata('Armadura');
+                    break;
+
+                case 3:
+                    jogador.usarSucata('Bandagem');
+                    break;
+
+                case 4:
+                    jogador.usarItem('Bandagem');
+                    break;
+
+                case 5:
+                    jogador.comerInimigos();
+                    break;
+
+                case 6:
+                    jogador.inimigos = -jogador.inimigos;
+                    prompt(`\t\t    Você procura um canto e se cobre com escombros, você dorme. 
+                    Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
+                    O dia ${
+                        dia + 1
+                    } da fuga começou e nós temos inimigos nos separando da liberdade...\n`);
+                    return;
+
+                default:
+                    `Opção Inválida linha 192`;
+                    break;
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+}
+
 function menuDeSalas(sala, tempo) {
     const acoes = {
         0: false,
@@ -152,7 +213,7 @@ function menuDeSalas(sala, tempo) {
 
     while (true) {
         console.clear();
-        console.log(`\t\tAções Realizadas ${tempo}\n\n\n\n\n`);
+        console.log(`\t\t\tDIA ${tempo}\n\n\n\n\n`);
         console.log('\t\nPORTAS DISPONÍVEIS PARA ABRIR\n');
         if (acoes['0'])
             console.log(
@@ -235,6 +296,7 @@ function venceBatalha(jogador, nivel) {
     );
     jogador.xp = xp;
     jogador.sucata = su;
+    jogador.inimigos = nivel;
 }
 
 function perdeBatalha(jogador) {
@@ -398,6 +460,7 @@ class Player extends Personagem {
         this.nivel = 1;
         this._race = race;
         this._sucata = 0;
+        this._inimigos = 0;
         this.alive = true;
 
         this.iniciaAtributos(this._race);
@@ -437,6 +500,12 @@ class Player extends Personagem {
     set pocao(num) {
         this._item.Pocao += num;
     }
+    get inimigos() {
+        return this._inimigos;
+    }
+    set inimigos(num) {
+        this._inimigos += num;
+    }
     get xp() {
         return this._xp;
     }
@@ -448,16 +517,54 @@ class Player extends Personagem {
     usarSucata(item) {
         if (item === 'Arma') {
             this.sucata >= this.arma + 3
-                ? ((this.sucata = -(this.arma + 3)), (this.arma = 1))
+                ? ((this.sucata = -(this.arma + 3)),
+                  (this.arma = 1),
+                  prompt(`\t\t\t\tSua Arma foi Aprimorada!`))
                 : prompt(`\t\t\t\tSucatas insuficientes!`);
         } else if (item === 'Armadura') {
             this.sucata >= this.armadura + 5
-                ? ((this.sucata = -(this.armadura + 5)), (this.armadura = 1))
+                ? ((this.sucata = -(this.armadura + 5)),
+                  (this.armadura = 1),
+                  prompt(`\t\t\t\tSua Armadura foi Aprimorada!`))
                 : prompt(`\t\t\t\tSucatas insuficientes!`);
         } else if (item === 'Bandagem') {
             this.sucata >= 2
-                ? ((this.sucata = -5), (this.sucata = 1))
+                ? ((this.sucata = -2),
+                  (this.bandagem = 1),
+                  prompt(`\t\t\t\tUma Bandagem foi criada!`))
                 : prompt(`\t\t\t\tSucatas insuficientes!`);
+        }
+    }
+
+    usarItem(item) {
+        if (item === 'Bandagem') {
+            const cura = rollaDado(4) + this.nivel;
+            this.bandagem
+                ? ((this.bandagem = -1),
+                  (this.pv = cura),
+                  prompt(`\t\t\t\tVocê recupera ${cura} pontos de vida`))
+                : prompt(`\t\t\t\tVocê não tem Bandagem!`);
+        } else if (item === 'Poção') {
+            const cura = rollaDado(4) + rollaDado(4) + this.nivel * 2;
+            this.pocao
+                ? ((this.pocao = -1),
+                  (this.pv = cura),
+                  prompt(`\t\t\t\tVocê recupera ${cura} pontos de vida`))
+                : prompt(`\t\t\t\tVocê não tem Poção!`);
+        }
+    }
+
+    comerInimigos() {
+        if (this.inimigos) {
+            const cura = this.inimigos * 2 + this.nivel;
+            prompt(
+                `Você se prepara para cozinhar os inimigos derrotados hoje.`,
+            );
+            prompt(`\t\t\t\tVocê recuperou ${cura} pontos de vida!`);
+            this.pv = cura;
+            this.inimigos = -this.inimigos;
+        } else {
+            prompt(`Você não derrotou nenhum inimigo hoje...`);
         }
     }
 
@@ -513,7 +620,7 @@ class Player extends Personagem {
             [this._forca, this._agilidade, this._robustez] = [3, 3, 3];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
-            [this._forca, this._agilidade, this._robustez] = [25, 25, 25];
+            [this._forca, this._agilidade, this._robustez] = [3, 3, 25];
         }
         [this._pv.Atual, this._pv.Total] = [
             this._robustez * 2 + 1,
@@ -549,19 +656,27 @@ class Ogro extends Monstro {
    COMEÇA O JOGO:: MAIN()
 */
 function main() {
-    const player = new Player(
-        playerName(),
-        menuDeSelecao('RAÇA', 'Humano', 'Anão', 'Elfo'),
-    );
+    // const player = new Player(
+    //     playerName(),
+    //     menuDeSelecao('RAÇA', 'Humano', 'Anão', 'Elfo'),
+    // );
+    const player = new Player(playerName(), 'DEUS');
     criarSala('SalaInicial');
     const index_sala = [0, 0];
-    let tempo = 0;
+    let [dia, acoes] = [0, 0];
 
     loopPrincipal: while (true) {
-        Sala.entraSala(index_sala[0], player, tempo);
+        // prompt(Sala.salas[index_sala[0]]);
+        Sala.entraSala(index_sala[0], player, dia);
+
+        if (acoes === 3) {
+            iniciaDormir(player, dia);
+            dia++;
+            acoes = 0;
+        }
 
         if (player.alive) {
-            const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], tempo));
+            const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], dia));
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
             else if (acao > 0) {
@@ -586,8 +701,7 @@ function main() {
         if (index_sala[1] === -1) break loopPrincipal;
         console.log(index_sala[0], index_sala[1], 147);
         index_sala[0] = index_sala[1];
-        tempo += 1;
-        prompt(Sala.salas[index_sala[0]]);
+        acoes += 1;
     }
 }
 main();
