@@ -93,14 +93,11 @@ function iniciaCombate(jogador, monstro, tempo) {
             console.log(
                 `\nRaça ${jogador.race}\tNível ${jogador.nivel} \tXP Total ${jogador.xp}`,
             );
-            // console.log(
-            //     `Força ${jogador.ataque} \tAgilidade ${jogador.defesa}\tRobustez ${jogador.robustez}`,
-            // );
             console.log(
-                `Força     ${jogador.ataque}\tVida Máx ${jogador.maxpv}\tSucatas  ${jogador.sucata}`,
+                `Força     ${jogador.forca}\tVida Máx ${jogador.maxpv}\tSucatas  ${jogador.sucata}`,
             );
             console.log(
-                `Agilidade ${jogador.defesa}\tArma     ${
+                `Agilidade ${jogador.agilidade}\tArma     ${
                     jogador.arma - 2
                 }\tBandagem ${jogador.bandagem}`,
             );
@@ -431,6 +428,7 @@ class Personagem {
         this._agilidade = agilidade;
         this._equip = { Arma: equip[0], Armadura: equip[1] };
         this.nivel = nivel;
+        this._race = 'Monstro';
     }
 
     get nome() {
@@ -454,40 +452,57 @@ class Personagem {
         return barraPV;
     }
 
-    get ataque() {
+    get forca() {
         return this._forca;
     }
-
-    set ataque(num) {
+    set forca(num) {
         this._forca += num;
     }
 
-    get defesa() {
+    get agilidade() {
         return this._agilidade;
     }
-
-    set defesa(num) {
+    set agilidade(num) {
         this._agilidade += num;
     }
 
-    get arma() {
-        return this._equip.Arma;
+    get ataque() {
+        const ataque = this.race != 'Elfo' ? this._forca : this._agilidade;
+        return ataque;
+    }
+    get defesa() {
+        const defesa =
+            this.race != 'Anão'
+                ? this._agilidade
+                : Math.round(this._agilidade + this._forca * 0.25);
+        return defesa;
     }
 
+    get arma() {
+        const arma = this._equip.Arma;
+        return arma;
+    }
     set arma(num) {
         this._equip.Arma += num;
     }
 
     get armadura() {
-        return this._equip.Armadura;
+        const armadura = this._equip.Armadura;
+        return armadura;
     }
-
     set armadura(num) {
         this._equip.Armadura += num;
     }
 
+    get race() {
+        return this._race;
+    }
+    set race(race) {
+        this._race = race;
+    }
+
     rolaDano() {
-        return rollaDado(this.arma) + this.ataque;
+        return rollaDado(this.arma) + this._forca;
     }
 }
 
@@ -508,9 +523,6 @@ class Player extends Personagem {
         this.alive = true;
 
         this.iniciaAtributos(this._race);
-    }
-    get race() {
-        return this._race;
     }
     get robustez() {
         return this._robustez;
@@ -563,20 +575,20 @@ class Player extends Personagem {
             this.sucata >= this.arma + 3
                 ? ((this.sucata = -(this.arma + 3)),
                   (this.arma = 1),
-                  prompt(`\t\t\t\tSua Arma foi Aprimorada!`))
-                : prompt(`\t\t\t\tSucatas insuficientes!`);
+                  prompt(`\t\t\t\t\tSua Arma foi Aprimorada!`))
+                : prompt(`\t\t\t\t\tSucatas insuficientes!`);
         } else if (item === 'Armadura') {
             this.sucata >= this.armadura + 5
                 ? ((this.sucata = -(this.armadura + 5)),
                   (this.armadura = 1),
-                  prompt(`\t\t\t\tSua Armadura foi Aprimorada!`))
-                : prompt(`\t\t\t\tSucatas insuficientes!`);
+                  prompt(`\t\t\t\t\tSua Armadura foi Aprimorada!`))
+                : prompt(`\t\t\t\t\tSucatas insuficientes!`);
         } else if (item === 'Bandagem') {
             this.sucata >= 2
                 ? ((this.sucata = -2),
                   (this.bandagem = 1),
-                  prompt(`\t\t\t\tUma Bandagem foi criada!`))
-                : prompt(`\t\t\t\tSucatas insuficientes!`);
+                  prompt(`\t\t\t\t\tUma Bandagem foi criada!`))
+                : prompt(`\t\t\t\t\tSucatas insuficientes!`);
         }
     }
 
@@ -586,15 +598,15 @@ class Player extends Personagem {
             this.bandagem
                 ? ((this.bandagem = -1),
                   (this.pv = cura),
-                  prompt(`\t\t\t\tVocê recupera ${cura} pontos de vida`))
-                : prompt(`\t\t\t\tVocê não tem Bandagem!`);
+                  prompt(`\t\t\t\t\tVocê recupera ${cura} pontos de vida`))
+                : prompt(`\t\t\t\t\tVocê não tem Bandagem!`);
         } else if (item === 'Poção') {
             const cura = rollaDado(4) + rollaDado(4) + this.nivel * 2;
             this.pocao
                 ? ((this.pocao = -1),
                   (this.pv = cura),
-                  prompt(`\t\t\t\tVocê recupera ${cura} pontos de vida`))
-                : prompt(`\t\t\t\tVocê não tem Poção!`);
+                  prompt(`\t\t\t\t\tVocê recupera ${cura} pontos de vida`))
+                : prompt(`\t\t\t\t\tVocê não tem Poção!`);
         }
     }
 
@@ -604,7 +616,7 @@ class Player extends Personagem {
             prompt(
                 `Você se prepara para cozinhar os inimigos derrotados hoje.`,
             );
-            prompt(`\t\t\t\tVocê recuperou ${cura} pontos de vida!`);
+            prompt(`\t\t\t\t\tVocê recuperou ${cura} pontos de vida!`);
             this.pv = cura;
             this.inimigos = -this.inimigos;
         } else {
@@ -633,13 +645,13 @@ class Player extends Personagem {
                 'Robustez',
             );
             if (atr === 1) {
-                this.ataque = 1;
+                this.forca = 1;
                 this.maxpv = 1;
                 prompt(
                     `\tSua Força aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
                 );
             } else if (atr === 2) {
-                this.defesa = 1;
+                this.agilidade = 1;
                 this.maxpv = 1;
                 prompt(
                     `\tSua Agilidade aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
@@ -658,10 +670,12 @@ class Player extends Personagem {
         this._equip.Arma = 2;
         if (race === 'Anão') {
             [this._forca, this._agilidade, this._robustez] = [3, 2, 5];
+            this.armadura = 1;
         } else if (race === 'Elfo') {
             [this._forca, this._agilidade, this._robustez] = [2, 4, 4];
+            this.arma = 1;
         } else if (race === 'Humano') {
-            [this._forca, this._agilidade, this._robustez] = [3, 3, 4];
+            [this._forca, this._agilidade, this._robustez] = [3, 4, 4];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
             [this._forca, this._agilidade, this._robustez] = [3, 3, 25];
@@ -711,7 +725,7 @@ function main() {
 
     loopPrincipal: while (true) {
         // prompt(Sala.salas[index_sala[0]]);
-        Sala.entraSala(index_sala[0], player, dia);
+        Sala.entraSala(index_sala[0], player, dia, acoes);
 
         if (player.alive) {
             // SE VIVO DORME
@@ -720,9 +734,7 @@ function main() {
                 dia++;
                 acoes = 0;
             }
-            const acao = Number(
-                menuDeSalas(Sala.salas[index_sala[0]], dia, acoes),
-            );
+            const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], dia));
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
             else if (acao > 0) {
