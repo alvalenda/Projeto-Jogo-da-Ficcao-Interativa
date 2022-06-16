@@ -362,12 +362,12 @@ class Sala {
         }
     }
 
-    static entraSala(index, jogador, tempo) {
+    static entraSala(index, jogador, tempo, acoes) {
         this.salas[index].guardiao.alive
             ? this.salas[index].combateSala(jogador, tempo)
             : prompt(`Você entrou na ${Sala.salas[index].nome}`);
 
-        if (index) {
+        if (index || acoes < 3) {
             console.log(
                 `\n\nComo o monstro foi derrotado, você pode fazer algo antes de prosseguir...\n`,
             );
@@ -717,7 +717,9 @@ function main() {
                 dia++;
                 acoes = 0;
             }
-            const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], dia));
+            const acao = Number(
+                menuDeSalas(Sala.salas[index_sala[0]], dia, acoes),
+            );
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
             else if (acao > 0) {
