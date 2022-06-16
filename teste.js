@@ -70,6 +70,7 @@ async function imprimeComPausa(msg, dt = 0.02) {
     }
 }
 
+const sleep = require('util').promisify(setTimeout);
 // console.log('Mensagem 1');
 // exibirComPausa(['Mensagem 2']);
 // console.log('Mensagem 3');
@@ -77,8 +78,31 @@ async function imprimeComPausa(msg, dt = 0.02) {
 // imprimeComPausa('Mensagem 5\n');
 const dia = 0;
 
-imprimeComPausa(`\t\t    Você procura um canto e se cobre com escombros, você dorme. 
+// imprimeComPausa(`\t\t    Você procura um canto e se cobre com escombros, você dorme.
+//                     Horas depois você desperta sem saber se é noite ou dia, mas não importa...
+//                     O dia ${
+//                         dia + 1
+//                     } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
+
+let msg = `\t\t    Você procura um canto e se cobre com escombros, você dorme. 
                     Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
                     O dia ${
                         dia + 1
-                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
+                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`;
+
+// (async () => {
+//     console.time('Dormi por');
+//     await sleep(3000);
+//     console.timeEnd('Dormi por');
+// })();
+
+function imprimedoido(msg, dt = 0.2) {
+    for (const element of msg) {
+        (async () => {
+            await sleep(dt * 1000);
+            process.stdout.write(element);
+        })();
+    }
+}
+
+imprimedoido(msg);

@@ -27,6 +27,16 @@ function rollaDado(faces = 20) {
     return (roll = Math.floor(Math.random() * faces + 1));
 }
 
+// async function exibirComPausa(msg, dt = 1.5) {
+//     console.log(
+//         await new Promise(resolve => {
+//             setTimeout(() => {
+//                 resolve(msg);
+//             }, dt * 1000);
+//         }),
+//     );
+// }
+
 function imprimeObjeto(objeto) {
     for (const chave in objeto) {
         if (Object.hasOwnProperty.call(objeto, chave)) {
@@ -136,13 +146,16 @@ function iniciaCombate(jogador, monstro, tempo) {
 }
 
 function iniciaDormir(jogador, dia) {
-    while (true) {
-        console.clear();
-        console.log(`\n\tÉ muito difícil perceber a passagem do tempo dentro das montanhas, 
+    console.clear();
+    const introSono = `\n\tÉ muito difícil perceber a passagem do tempo dentro das montanhas, 
         mas seu corpo esta gritando alto em seus ouvidos que este dia acabou.\n
         O dia ${dia} da sua fuga foi longo e cansativo, está na hora de parar e dar um descanso pro seu corpo...\n\n\n
         Antes de dormir você pode converter suas sucatas para aperfeiçoar sua arma, armadura, 
-        fazer bandagens e curativos. Quando terminar basta ir na Opção Dormir.\n\n`);
+        fazer bandagens e curativos. Quando terminar basta ir na Opção Dormir.\n\n`;
+    prompt(introSono);
+    while (true) {
+        console.clear();
+        console.log(introSono);
         console.log(jogador.printPV());
         console.log(`\nTotal de Sucatas ${jogador.sucata}`);
         console.log(`\n\nAções Disponíveis:`);
@@ -353,6 +366,36 @@ class Sala {
         this.salas[index].guardiao.alive
             ? this.salas[index].combateSala(jogador, tempo)
             : prompt(`Você entrou na ${Sala.salas[index].nome}`);
+
+        if (index) {
+            console.log(
+                `\n\nComo o monstro foi derrotado, você pode fazer algo antes de prosseguir...\n`,
+            );
+            console.clear();
+            loopMenuSala: while (true) {
+                console.log(
+                    `\t\t\t\t\t${
+                        Sala.salas[index].nome
+                    }\n\n${jogador.printPV()}\nSucatas: ${jogador.sucata}\n`,
+                );
+                const menu = menuDeSelecao(
+                    'Ação de Sala',
+                    'Criar Bandagem',
+                    'Usar Bandagem',
+                    'Continuar Explorando',
+                );
+                if (menu === 1) {
+                    jogador.usarSucata('Bandagem');
+                } else if (menu === 2) {
+                    jogador.usarItem('Bandagem');
+                } else if (menu === 3) {
+                    prompt(
+                        '\t\t\t\t\tok... você oberva as Portas desta sala...',
+                    );
+                    break loopMenuSala;
+                }
+            }
+        }
     }
 
     combateSala(jogador, tempo) {
@@ -554,7 +597,7 @@ class Player extends Personagem {
 
     comerInimigos() {
         if (this.inimigos) {
-            const cura = this.inimigos * 2 + this.nivel;
+            const cura = this.inimigos;
             prompt(
                 `Você se prepara para cozinhar os inimigos derrotados hoje.`,
             );
@@ -611,11 +654,11 @@ class Player extends Personagem {
     iniciaAtributos(race) {
         this._equip.Arma = 2;
         if (race === 'Anão') {
-            [this._forca, this._agilidade, this._robustez] = [3, 2, 4];
+            [this._forca, this._agilidade, this._robustez] = [3, 2, 5];
         } else if (race === 'Elfo') {
-            [this._forca, this._agilidade, this._robustez] = [2, 4, 3];
+            [this._forca, this._agilidade, this._robustez] = [2, 4, 4];
         } else if (race === 'Humano') {
-            [this._forca, this._agilidade, this._robustez] = [3, 3, 3];
+            [this._forca, this._agilidade, this._robustez] = [3, 3, 4];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
             [this._forca, this._agilidade, this._robustez] = [3, 3, 25];
