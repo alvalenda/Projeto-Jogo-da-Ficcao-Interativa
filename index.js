@@ -144,15 +144,14 @@ function iniciaDormir(jogador, dia) {
         Antes de dormir você pode converter suas sucatas para aperfeiçoar sua arma, armadura, 
         fazer bandagens e curativos. Quando terminar basta ir na Opção Dormir.\n\n`);
         console.log(jogador.printPV());
-        console.log(
-            `\nTotal de Sucatas ${jogador.sucata}\n\nAções Disponíveis:`,
-        );
-        console.log(`[1] - Melhorar Arma     \tcusto ${jogador.arma + 5 - 2}`);
-        console.log(`[2] - Melhorar Armadura \tcusto ${jogador.armadura + 5}`);
-        console.log(`[3] - Criar Bandagem    \tcusto ${2}`);
-        console.log(`[4] - Aplicar Bandagem  \ttotal ${jogador.bandagem}`);
-        console.log(`[5] - Comer os Inimigos \ttotal ${jogador.inimigos}`);
-        console.log(`[6] - DORMIR!\n`);
+        console.log(`\nTotal de Sucatas ${jogador.sucata}`);
+        console.log(`\n\nAções Disponíveis:`);
+        console.log(`[1] Melhorar Arma     \t\tcusta ${jogador.arma + 5 - 2}`);
+        console.log(`[2] Melhorar Armadura \t\tcusta ${jogador.armadura + 5}`);
+        console.log(`[3] Criar Bandagem    \t\tcusta ${2} sucatas`);
+        console.log(`[4] Aplicar Bandagem  \t\t${jogador.bandagem} bandagens`);
+        console.log(`[5] Comer os Inimigos \t\t${jogador.inimigos} inimigos`);
+        console.log(`[6] DORMIR!\n`);
         try {
             const opcao = parseInt(prompt(`Realizar qual Ação? `));
             if (isNaN(opcao) || opcao < 1 || opcao > 6)
@@ -185,12 +184,11 @@ function iniciaDormir(jogador, dia) {
                     Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
                     O dia ${
                         dia + 1
-                    } da fuga começou e nós temos inimigos nos separando da liberdade...\n`);
+                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
                     return;
 
                 default:
-                    `Opção Inválida linha 192`;
-                    break;
+                    throw `Opção Inválida linha 192`;
             }
         } catch (err) {
             console.log(err);
@@ -656,11 +654,11 @@ class Ogro extends Monstro {
    COMEÇA O JOGO:: MAIN()
 */
 function main() {
-    // const player = new Player(
-    //     playerName(),
-    //     menuDeSelecao('RAÇA', 'Humano', 'Anão', 'Elfo'),
-    // );
-    const player = new Player(playerName(), 'DEUS');
+    const player = new Player(
+        playerName(),
+        menuDeSelecao('RAÇA', 'Humano', 'Anão', 'Elfo'),
+    );
+    // const player = new Player(playerName(), 'DEUS');
     criarSala('SalaInicial');
     const index_sala = [0, 0];
     let [dia, acoes] = [0, 0];
