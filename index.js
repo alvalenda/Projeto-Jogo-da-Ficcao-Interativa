@@ -81,7 +81,7 @@ function criarSala(indexmae) {
 function iniciaCombate(jogador, monstro, tempo) {
     let turno = 0;
     const primeiro = jogador.defesa >= monstro.defesa ? 0 : 1;
-    while (true) {
+    loopCombate: while (true) {
         function imprimeCombate() {
             console.clear();
             console.log(
@@ -102,7 +102,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 }\tBandagem ${jogador.bandagem}`,
             );
             console.log(
-                `Robustez  ${jogador.robustez}\tArmadura ${jogador.armadura}\tPoção    ${jogador.pocao}`,
+                `Robustez  ${jogador.robustez}\tArmadura ${jogador.armadura}\tPoção    ${jogador.pocao}\n`,
             );
         }
         function resolveTurno(ataca, defende) {
@@ -123,16 +123,50 @@ function iniciaCombate(jogador, monstro, tempo) {
             if (!defende.pv[0]) defende.alive = false;
             return;
         }
+        function resolveFuga(jogador, monstro) {
+            prompt(`Você tenta fugir do combate...`);
+            if (
+                roll + jogador.nivel + jogador.agilidade >
+                10 + monstro.nivel + monstro.agilidade
+            ) {
+                prompt(`\t\t\t\t\tconseguiu! você foge para a sala anterior!`);
+                return true;
+            } else {
+                prompt(
+                    `\t\t\t\t\tfalhou! o ${monstro.nome} foi mais rápido do que você!`,
+                );
+                return false;
+            }
+        }
+        function usarInventario(jogador) {
+            jogador.usarItem('Bandagem');
+        }
+
         const roll = rollaDado(20);
         imprimeCombate();
-        // console.log(roll);
 
-        turno % 2 === primeiro
-            ? (console.log('\nÉ seu turno! O que deseja fazer?'),
-              prompt(`[ATACAR]\t[FUGIR]\n`),
-              resolveTurno(jogador, monstro))
-            : (prompt(`\n${monstro.nome} se prepara para agir`),
-              resolveTurno(monstro, jogador));
+        // turno % 2 === primeiro
+        //     ? (console.log('\nÉ seu turno! O que deseja fazer?'),
+        //       prompt(`[ATACAR]\t[FUGIR]\n`),
+        //       resolveTurno(jogador, monstro))
+        //     : (prompt(`\n${monstro.nome} se prepara para agir`),
+        //       resolveTurno(monstro, jogador));
+        if (turno % 2 === primeiro) {
+            const acao = menuDeSelecao(
+                'Ação de Combate',
+                'ATACAR',
+                'INVENTÁRIO',
+                'FUGIR',
+            );
+            if (acao === 1) resolveTurno(jogador, monstro);
+            else if (acao === 2) usarInventario(jogador, monstro);
+            else if (resolveFuga(jogador, monstro)) {
+                return 'fugiu';
+            }
+        } else {
+            prompt(`${monstro.nome} se prepara para agir`);
+            resolveTurno(monstro, jogador);
+        }
 
         if (jogador.alive && monstro.alive) turno++;
         else {
@@ -206,7 +240,7 @@ function iniciaDormir(jogador, dia) {
     }
 }
 
-function menuDeSalas(sala, tempo) {
+function menuDeSalas(sala, tempo, actions) {
     const acoes = {
         0: false,
         1: false,
@@ -221,7 +255,9 @@ function menuDeSalas(sala, tempo) {
 
     while (true) {
         console.clear();
-        console.log(`\t\t\tDIA ${tempo}\n\n\n\n\n`);
+        console.log(
+            `\t\t\tDIA ${tempo}\n\t\tSalas Percorridas Hoje ${actions}\n\n\n\n`,
+        );
         console.log('\t\nPORTAS DISPONÍVEIS PARA ABRIR\n');
         if (acoes['0'])
             console.log(
@@ -360,10 +396,12 @@ class Sala {
     }
 
     static entraSala(index, jogador, tempo, acoes) {
+        let fuga = false;
         this.salas[index].guardiao.alive
-            ? this.salas[index].combateSala(jogador, tempo)
+            ? (fuga = this.salas[index].combateSala(jogador, tempo))
             : prompt(`Você entrou na ${Sala.salas[index].nome}`);
 
+        if (fuga === 'fugiu') return fuga;
         if (index && acoes < 3 && jogador.alive) {
             console.log(
                 `\n\nComo o monstro foi derrotado, você pode fazer algo antes de prosseguir...\n`,
@@ -399,9 +437,11 @@ class Sala {
     }
 
     combateSala(jogador, tempo) {
-        iniciaCombate(jogador, this.guardiao, tempo)
-            ? venceBatalha(jogador, this.guardiao.nivel)
-            : perdeBatalha(jogador);
+        const combate = iniciaCombate(jogador, this.guardiao, tempo);
+        if (combate && combate != 'fugiu')
+            venceBatalha(jogador, this.guardiao.nivel);
+        else if (combate != 'fugiu') perdeBatalha(jogador);
+        else return combate;
     }
 
     abrirPorta() {
@@ -721,20 +761,24 @@ function main() {
     // const player = new Player(playerName(), 'DEUS');
     criarSala('SalaInicial');
     const index_sala = [0, 0];
-    let [dia, acoes] = [0, 0];
+    let [dia, acoes, fugiu] = [0, 0, 'não'];
 
     loopPrincipal: while (true) {
-        // prompt(Sala.salas[index_sala[0]]);
-        Sala.entraSala(index_sala[0], player, dia, acoes);
+        fugiu = Sala.entraSala(index_sala[0], player, dia, acoes);
 
-        if (player.alive) {
+        if (fugiu === 'fugiu') {
+            index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
+            fugiu = 0;
+        } else if (player.alive) {
             // SE VIVO DORME
             if (acoes === 3) {
                 iniciaDormir(player, dia);
                 dia++;
                 acoes = 0;
             }
-            const acao = Number(menuDeSalas(Sala.salas[index_sala[0]], dia));
+            const acao = Number(
+                menuDeSalas(Sala.salas[index_sala[0]], dia, acoes),
+            );
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
             else if (acao > 0) {
