@@ -138,13 +138,13 @@ function iniciaCombate(jogador, monstro, tempo) {
                       )
                     : exibirComPausa(
                           [`→     Outch!  `, `→  Você sofreu ${dano} de dano`],
-                          2000,
+                          1800,
                       );
-                exibirComPausa(' ', 2250);
+                exibirComPausa(' ', 2000);
                 defende.pv = -dano;
             } else {
-                exibirComPausa([`→\tERROU o ataque`], 1000); // colocar o prompt na linha seguinte?
-                exibirComPausa(' ', 2250);
+                exibirComPausa([`→\tERROU o ataque`], 1000); 
+                exibirComPausa(' ', 2000);
             }
             if (!defende.pv[0]) defende.alive = false;
             return;
