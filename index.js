@@ -36,6 +36,15 @@ function rollaDado(faces = 20) {
 //         }),
 //     );
 // }
+function exibirComPausa(msg, miliseconds = 1500) {
+    for (const element of msg) {
+        const dt = new Date();
+        while (new Date() - dt <= miliseconds) {
+            // Não faz nada
+        }
+        process.stdout.write(element);
+    }
+}
 
 function imprimeObjeto(objeto) {
     for (const chave in objeto) {
@@ -106,35 +115,53 @@ function iniciaCombate(jogador, monstro, tempo) {
             );
         }
         function resolveTurno(ataca, defende) {
-            prompt(`${ataca.nome} ATACA ${defende.nome}...`);
+            exibirComPausa(
+                [`    ⤷ ${ataca.nome} ATACA ${defende.nome}     `],
+                800,
+            );
             if (roll + ataca.ataque >= 10 + defende.defesa) {
                 let dano = ataca.rolaDano();
                 dano = dano > defende.armadura ? dano - defende.armadura : 1;
+                // altera texto se o atacante pertence a classe Player
                 ataca instanceof Player
-                    ? prompt(
-                          `\t\t\t\tÉ UM ACERTO! \tVocê causou ${dano} de dano no ${defende.nome}.`,
+                    ? exibirComPausa(
+                          [
+                              `→    É UM ACERTO!  `,
+                              `→  Você causou ${dano} de dano no ${defende.nome}`,
+                          ],
+                          2000,
                       )
-                    : prompt(`\t\t\t\tOutch! \tVocê sofreu ${dano} de dano.`);
+                    : exibirComPausa(
+                          [`→     Outch!  `, `→  Você sofreu ${dano} de dano`],
+                          2000,
+                      );
+                exibirComPausa(' ', 2250);
                 defende.pv = -dano;
             } else {
-                process.stdout.write(`\t\t\t\t\tO ataque ERROU!!!`); // colocar o prompt de baixo aqui
-                prompt();
+                exibirComPausa([`→\tERROU o ataque`], 1000); // colocar o prompt na linha seguinte?
+                exibirComPausa(' ', 2250);
             }
             if (!defende.pv[0]) defende.alive = false;
             return;
         }
         function resolveFuga(jogador, monstro) {
-            prompt(`Você tenta fugir do combate...`);
+            exibirComPausa([`   ⤷ Você tenta fugir do combate\t`], 800);
             if (
                 roll + jogador.nivel + jogador.agilidade >
                 10 + monstro.nivel + monstro.agilidade
             ) {
-                prompt(`\t\t\t\t\tconseguiu! você foge para a sala anterior!`);
+                exibirComPausa(
+                    [`→\tSUCESSO! Você fogiu para a sala anterior`],
+                    2000,
+                );
+                exibirComPausa('\n', 2000);
                 return true;
             } else {
-                prompt(
-                    `\t\t\t\t\tfalhou! o ${monstro.nome} foi mais rápido do que você!`,
+                exibirComPausa(
+                    [`→\tFALHOU! ${monstro.nome} foi mais rápido do que você`],
+                    2000,
                 );
+                exibirComPausa('\n', 2000);
                 return false;
             }
         }
@@ -145,12 +172,6 @@ function iniciaCombate(jogador, monstro, tempo) {
         const roll = rollaDado(20);
         imprimeCombate();
 
-        // turno % 2 === primeiro
-        //     ? (console.log('\nÉ seu turno! O que deseja fazer?'),
-        //       prompt(`[ATACAR]\t[FUGIR]\n`),
-        //       resolveTurno(jogador, monstro))
-        //     : (prompt(`\n${monstro.nome} se prepara para agir`),
-        //       resolveTurno(monstro, jogador));
         if (turno % 2 === primeiro) {
             const acao = menuDeSelecao(
                 'Ação de Combate',
@@ -164,7 +185,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 return 'fugiu';
             }
         } else {
-            prompt(`${monstro.nome} se prepara para agir`);
+            exibirComPausa([`${monstro.nome} se prepara para agir\n`], 800);
             resolveTurno(monstro, jogador);
         }
 
@@ -183,7 +204,7 @@ function iniciaDormir(jogador, dia) {
         O dia ${dia} da sua fuga foi longo e cansativo, está na hora de parar e dar um descanso pro seu corpo...\n\n\n
         Antes de dormir você pode converter suas sucatas para aperfeiçoar sua arma, armadura, 
         fazer bandagens e curativos. Quando terminar basta ir na Opção Dormir.\n\n`;
-    prompt(introSono);
+    exibirComPausa(introSono, 20);
     while (true) {
         console.clear();
         console.log(introSono);
@@ -224,11 +245,15 @@ function iniciaDormir(jogador, dia) {
 
                 case 6:
                     jogador.inimigos = -jogador.inimigos;
-                    prompt(`\t\t    Você procura um canto e se cobre com escombros, você dorme. 
+                    exibirComPausa(
+                        `\t\t    Você procura um canto e se cobre com escombros, você dorme. 
                     Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
                     O dia ${
                         dia + 1
-                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
+                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`,
+                        20,
+                    );
+                    prompt('');
                     return;
 
                 default:
@@ -318,16 +343,22 @@ function menuDeSelecao(menu, a, b, c) {
     console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}\n`);
     while (true) {
         try {
-            let selecao = parseInt(prompt(`Número da ${menu} escolhida: `));
-            if (isNaN(selecao) || selecao < 1 || selecao > 3)
-                throw `\t\t\t\tOpção inválida! Entre com 1, 2 ou 3.`;
+            let selecao = parseInt(+prompt(`Número da ${menu} escolhida: `));
+
+            if (isNaN(selecao)) throw `\t\t\t\t\tentre com um número...`;
+            if (menu === 'Ação de Combate') {
+                if (selecao < 0 || selecao > 3)
+                    throw `\t\t\t\t\tOpção inválida! Entre com 1, 2, 3 ou vazio para ATACAR`;
+            } else if (selecao < 1 || selecao > 3)
+                throw `\t\t\t\t\tOpção inválida! Entre com 1, 2 ou 3`;
             if (menu === 'RAÇA') {
                 selecao =
-                    selecao === 1 ? 'Humano' : selecao === 2 ? 'Anão' : 'Elfo';
+                    selecao == 1 ? 'Humano' : selecao === 2 ? 'Anão' : 'Elfo';
             }
-            return selecao;
+            // Se selecao == 0 -> retorna 1 -> é 0 se não digitar nada -> ataca sem ter que digitar ;)
+            return selecao ? selecao : 1;
         } catch (err) {
-            console.log(err);
+            console.log(err, menu);
         }
     }
 }
@@ -680,9 +711,9 @@ class Player extends Personagem {
             );
             const atr = menuDeSelecao(
                 'opção',
-                'Força',
-                'Agilidade',
-                'Robustez',
+                'Força     🏋️‍♂️',
+                'Agilidade 🤸‍♀️',
+                'Robustez  🧗‍♀️',
             );
             if (atr === 1) {
                 this.forca = 1;
@@ -756,7 +787,7 @@ class Ogro extends Monstro {
 function main() {
     const player = new Player(
         playerName(),
-        menuDeSelecao('RAÇA', 'Humano', 'Anão', 'Elfo'),
+        menuDeSelecao('RAÇA', 'Humano   👨‍🌾', 'Anão \t👳', 'Elfo \t🧝'),
     );
     // const player = new Player(playerName(), 'DEUS');
     criarSala('SalaInicial');

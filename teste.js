@@ -1,4 +1,5 @@
 console.clear();
+const prompt = require('prompt-sync')();
 // const prompt = require('prompt-sync')();
 // function rollaDado(num) {
 //     const roll = Math.floor(Math.random() * num + 1);
@@ -85,17 +86,27 @@ const dia = 0;
 //                     } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
 
 let msg = `\t\t    Você procura um canto e se cobre com escombros, você dorme. 
-                    Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
-                    O dia ${
-                        dia + 1
-                    } da sua fuga começa e você tem inimigos te separando da liberdade...\n`;
+            Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
+            O dia ${
+                dia + 1
+            } da sua fuga começa e você tem inimigos te separando da liberdade...\n`;
+
+function pause(msg, miliseconds) {
+    for (const element of msg) {
+        const dt = new Date();
+        while (new Date() - dt <= miliseconds) {
+            // Não faz nada
+        }
+        process.stdout.write(element);
+    }
+}
 
 // (async () => {
 //     console.time('Dormi por');
 //     await sleep(3000);
 //     console.timeEnd('Dormi por');
 // })();
-
+/*
 function imprimedoido(msg, dt = 0.2) {
     for (const element of msg) {
         (async () => {
@@ -104,5 +115,14 @@ function imprimedoido(msg, dt = 0.2) {
         })();
     }
 }
-
 imprimedoido(msg);
+*/
+console.log('Mensagem 1');
+console.log('Mensagem 2');
+// pause(msg, 20);
+console.log('Mensagem 5');
+
+// const num = parseInt(+prompt('num: '));
+
+// console.log(num);
+console.log(1 > 0 && (1 > 0 || 0 > 1));
