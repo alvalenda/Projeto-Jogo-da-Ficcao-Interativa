@@ -55,28 +55,33 @@ function imprimeObjeto(objeto) {
     }
 }
 
-function criarMonstro(nome) {
-    const lista = monstros['Monstros'];
+function criarMonstro(monstro) {
+    // const lista = monstros['Monstros'];
     let _monstro;
-    for (let i = 0; i < lista.length; i++) {
-        //imprimeObjeto(lista[i]);
-        if (lista[i].Nome === nome) {
-            const [a, b, c, d, e, f, g] = [
-                lista[i].Atributos[0],
-                lista[i].Atributos[1],
-                lista[i].Atributos[2],
-                lista[i].Atributos[3],
-                lista[i].Atributos[4],
-                lista[i].Nivel,
-                lista[i].Arte,
-            ];
-            //console.log(lista[i].Nome);
-            if (lista[i].Nome === 'Ogro')
-                _monstro = new Ogro(a, b, c, d, e, f, g);
-            else _monstro = new Monstro(a, b, c, d, e, f, g);
-            return _monstro;
-        }
-    }
+    // for (let i = 0; i < lista.length; i++) {
+    //     //imprimeObjeto(lista[i]);
+    //     if (lista[i].Nome === nome) {
+    const [a, b, c, d, e, f, g] = [
+        monstro.Atributos[0],
+        monstro.Atributos[1],
+        monstro.Atributos[2],
+        monstro.Atributos[3],
+        monstro.Atributos[4],
+        monstro.Nivel,
+        monstro.Arte,
+    ];
+    //         //console.log(lista[i].Nome);
+    //     if (lista[i].Nome === 'Ogro')
+    //         _monstro = new Ogro(a, b, c, d, e, f, g);
+    //     else _monstro = new Monstro(a, b, c, d, e, f, g);
+    //     return _monstro;
+    // }
+    // }
+    _monstro =
+        monstro.Nome === 'Ogro'
+            ? new Ogro(a, b, c, d, e, f, g)
+            : new Monstro(a, b, c, d, e, f, g);
+    return _monstro;
 }
 
 function criarSala(indexmae) {
@@ -129,7 +134,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                               `→    É UM ACERTO!  `,
                               `→  Você causou ${dano} de dano no ${defende.nome}`,
                           ],
-                          2000,
+                          1250,
                       )
                     : exibirComPausa(
                           [`→     Outch!  `, `→  Você sofreu ${dano} de dano`],
@@ -387,26 +392,44 @@ class Sala {
     constructor(salamae) {
         this.nome = 'Sala ' + String(Sala.num_salas);
         this._pos = Sala.num_salas;
-        this._nivel = Math.floor(Sala.salas.length / 4) + 1;
         this.portas = { Mae: salamae, Filha: [] };
+        this._nivel;
         this.guardiao;
+
+        this.setNivel(Math.floor(Sala.salas.length / 4) + 1);
+        this.setGuardiao(this._nivel);
 
         for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
             this.portas.Filha.push('Fechada');
         }
-        for (let i = 0; i < monstros.Monstros.length; i++) {
-            if (monstros.Monstros[i].Nivel === this._nivel) {
-                const guardiao = monstros.Monstros[i].Nome;
-                this.guardiao = criarMonstro(guardiao);
-                break;
-            }
-        }
+
+        // for (let i = 0; i < monstros.Monstros.length; i++) {
+        //     if (monstros.Monstros[i].Nivel === this._nivel) {
+        //         const guardiao = monstros.Monstros[i].Nome;
+        //         this.guardiao = criarMonstro(guardiao);
+        //         break;
+        //     }
+        // }
     }
 
     static imprimeSalas() {
         for (const sala of Sala.salas) {
             imprimeObjeto(sala);
         }
+    }
+
+    setNivel(num) {
+        /* Toda sala tem 10% de ser nível - 1 e 10% de ser de um nível + 1 
+           Salas de nível 1 não podem retornar nível 0                    */
+        const roll = rollaDado(20);
+        const level = roll > 6 ? num : roll > 2 ? num - 1 : num + 1;
+        this._nivel = level ? level : 1;
+    }
+
+    setGuardiao(nivel) {
+        const guardiaoes = monstros.Monstros[nivel - 1];
+        const guardiao = Math.floor(Math.random() * guardiaoes.length);
+        this.guardiao = criarMonstro(guardiaoes[guardiao]);
     }
 
     get index() {
