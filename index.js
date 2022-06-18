@@ -121,7 +121,7 @@ function iniciaCombate(jogador, monstro, tempo) {
         }
         function resolveTurno(ataca, defende) {
             exibirComPausa(
-                [`    ⤷ ${ataca.nome} ATACA ${defende.nome}     `],
+                [`        ⤷ ${ataca.nome} ATACA ${defende.nome}     `],
                 800,
             );
             if (roll + ataca.ataque >= 10 + defende.defesa) {
@@ -143,7 +143,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 exibirComPausa(' ', 2000);
                 defende.pv = -dano;
             } else {
-                exibirComPausa([`→\tERROU o ataque`], 1000); 
+                exibirComPausa([`→\tERROU o ataque`], 1000);
                 exibirComPausa(' ', 2000);
             }
             if (!defende.pv[0]) defende.alive = false;
@@ -596,7 +596,7 @@ class Personagem {
     }
 
     rolaDano() {
-        return rollaDado(this.arma) + this._forca;
+        return rollaDado(this.arma * 2) + this._forca;
     }
 }
 

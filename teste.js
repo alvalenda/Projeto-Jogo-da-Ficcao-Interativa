@@ -71,13 +71,13 @@ async function imprimeComPausa(msg, dt = 0.02) {
     }
 }
 
-const sleep = require('util').promisify(setTimeout);
+// const sleep = require('util').promisify(setTimeout);
 // console.log('Mensagem 1');
 // exibirComPausa(['Mensagem 2']);
 // console.log('Mensagem 3');
 // console.log('Mensagem 4');
 // imprimeComPausa('Mensagem 5\n');
-const dia = 0;
+// const dia = 0;
 
 // imprimeComPausa(`\t\t    Você procura um canto e se cobre com escombros, você dorme.
 //                     Horas depois você desperta sem saber se é noite ou dia, mas não importa...
@@ -85,21 +85,21 @@ const dia = 0;
 //                         dia + 1
 //                     } da sua fuga começa e você tem inimigos te separando da liberdade...\n`);
 
-let msg = `\t\t    Você procura um canto e se cobre com escombros, você dorme. 
-            Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
-            O dia ${
-                dia + 1
-            } da sua fuga começa e você tem inimigos te separando da liberdade...\n`;
+// let msg = `\t\t    Você procura um canto e se cobre com escombros, você dorme.
+//             Horas depois você desperta sem saber se é noite ou dia, mas não importa...
+//             O dia ${
+//                 dia + 1
+//             } da sua fuga começa e você tem inimigos te separando da liberdade...\n`;
 
-function pause(msg, miliseconds) {
-    for (const element of msg) {
-        const dt = new Date();
-        while (new Date() - dt <= miliseconds) {
-            // Não faz nada
-        }
-        process.stdout.write(element);
-    }
-}
+// function pause(msg, miliseconds) {
+//     for (const element of msg) {
+//         const dt = new Date();
+//         while (new Date() - dt <= miliseconds) {
+//             // Não faz nada
+//         }
+//         process.stdout.write(element);
+//     }
+// }
 
 // (async () => {
 //     console.time('Dormi por');
@@ -117,12 +117,20 @@ function imprimedoido(msg, dt = 0.2) {
 }
 imprimedoido(msg);
 */
-console.log('Mensagem 1');
-console.log('Mensagem 2');
+// console.log('Mensagem 1');
+// console.log('Mensagem 2');
 // pause(msg, 20);
-console.log('Mensagem 5');
+// console.log('Mensagem 5');
 
 // const num = parseInt(+prompt('num: '));
 
 // console.log(num);
-console.log(1 > 0 && (1 > 0 || 0 > 1));
+// console.log(1 > 0 && (1 > 0 || 0 > 1));
+
+const inicio = +prompt(
+    '[1] Levantar\n[2] Continuar dormindo \nDigite a opção desejada:',
+);
+
+if (inicio === 1) {
+    console.log('Olá!');
+}
