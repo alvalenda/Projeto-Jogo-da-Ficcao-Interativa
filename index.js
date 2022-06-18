@@ -24,7 +24,7 @@ function playerName() {
 }
 
 function rollaDado(faces = 20) {
-    const roll = Math.floor(Math.random() * faces + 1);
+    const roll = Math.floor(Math.random() * faces) + 1;
     return roll;
 }
 
@@ -589,7 +589,7 @@ class Player extends Personagem {
         this._forca;
         this._agilidade;
         this._robustez;
-        this._equip = { Arma: 2, Armadura: 0 };
+        this._equip = { Arma: 0, Armadura: 0 };
         this._item = { Bandagem: 0, Pocao: 0 };
         this._xp = 0;
         this.nivel = 1;
@@ -648,8 +648,8 @@ class Player extends Personagem {
 
     usarSucata(item) {
         if (item === 'Arma') {
-            this.sucata >= this.arma + 3
-                ? ((this.sucata = -(this.arma + 3)),
+            this.sucata >= this.arma + 5
+                ? ((this.sucata = -(this.arma + 5)),
                   (this.arma = 1),
                   prompt(`\t\t\t\t\tSua Arma foi Aprimorada!`))
                 : prompt(`\t\t\t\t\tSucatas insuficientes!`);
@@ -743,15 +743,14 @@ class Player extends Personagem {
     }
 
     iniciaAtributos(race) {
-        this._equip.Arma = 2;
         if (race === 'Anão') {
-            [this._forca, this._agilidade, this._robustez] = [3, 2, 5];
+            [this._forca, this._agilidade, this._robustez] = [4, 2, 5];
             this.armadura = 1;
         } else if (race === 'Elfo') {
-            [this._forca, this._agilidade, this._robustez] = [2, 4, 4];
+            [this._forca, this._agilidade, this._robustez] = [3, 4, 4];
             this.arma = 1;
         } else if (race === 'Humano') {
-            [this._forca, this._agilidade, this._robustez] = [3, 4, 4];
+            [this._forca, this._agilidade, this._robustez] = [4, 4, 4];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
             [this._forca, this._agilidade, this._robustez] = [3, 3, 25];
