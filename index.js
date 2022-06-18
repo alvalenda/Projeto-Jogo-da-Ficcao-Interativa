@@ -577,7 +577,8 @@ class Personagem {
     }
 
     rolaDano() {
-        return rollaDado(this.arma * 2) + this._forca;
+        const dano = rollaDado(this.arma * 2) + this.forca;
+        return dano;
     }
 }
 
