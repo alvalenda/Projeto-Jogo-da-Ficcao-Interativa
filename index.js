@@ -92,9 +92,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 `Força     ${jogador.forca}\tVida Máx ${jogador.maxpv}\tSucatas  ${jogador.sucata}`,
             );
             console.log(
-                `Agilidade ${jogador.agilidade}\tArma     ${
-                    jogador.arma - 2
-                }\tBandagem ${jogador.bandagem}`,
+                `Agilidade ${jogador.agilidade}\tArma     ${jogador.arma}\tBandagem ${jogador.bandagem}`,
             );
             console.log(
                 `Robustez  ${jogador.robustez}\tArmadura ${jogador.armadura}\tPoção    ${jogador.pocao}\n`,
@@ -124,7 +122,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 exibirComPausa(' ', 2000);
                 defende.pv = -dano;
             } else {
-                exibirComPausa([`→\tERROU o ataque`], 1000);
+                exibirComPausa([`→  ERROU o ataque`], 1000);
                 exibirComPausa(' ', 2000);
             }
             if (!defende.pv[0]) defende.alive = false;
@@ -197,7 +195,7 @@ function iniciaDormir(jogador, dia) {
         console.log(jogador.printPV());
         console.log(`\nTotal de Sucatas ${jogador.sucata}`);
         console.log(`\n\nAções Disponíveis:`);
-        console.log(`[1] Melhorar Arma     \t\tcusta ${jogador.arma + 5 - 2}`);
+        console.log(`[1] Melhorar Arma     \t\tcusta ${jogador.arma + 5}`);
         console.log(`[2] Melhorar Armadura \t\tcusta ${jogador.armadura + 5}`);
         console.log(`[3] Criar Bandagem    \t\tcusta ${2} sucatas`);
         console.log(`[4] Aplicar Bandagem  \t\t${jogador.bandagem} bandagens`);
