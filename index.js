@@ -24,18 +24,10 @@ function playerName() {
 }
 
 function rollaDado(faces = 20) {
-    return (roll = Math.floor(Math.random() * faces + 1));
+    const roll = Math.floor(Math.random() * faces + 1);
+    return roll;
 }
 
-// async function exibirComPausa(msg, dt = 1.5) {
-//     console.log(
-//         await new Promise(resolve => {
-//             setTimeout(() => {
-//                 resolve(msg);
-//             }, dt * 1000);
-//         }),
-//     );
-// }
 function exibirComPausa(msg, miliseconds = 1500) {
     for (const element of msg) {
         const dt = new Date();
@@ -56,11 +48,7 @@ function imprimeObjeto(objeto) {
 }
 
 function criarMonstro(monstro) {
-    // const lista = monstros['Monstros'];
     let _monstro;
-    // for (let i = 0; i < lista.length; i++) {
-    //     //imprimeObjeto(lista[i]);
-    //     if (lista[i].Nome === nome) {
     const [a, b, c, d, e, f, g] = [
         monstro.Atributos[0],
         monstro.Atributos[1],
@@ -70,13 +58,6 @@ function criarMonstro(monstro) {
         monstro.Nivel,
         monstro.Arte,
     ];
-    //         //console.log(lista[i].Nome);
-    //     if (lista[i].Nome === 'Ogro')
-    //         _monstro = new Ogro(a, b, c, d, e, f, g);
-    //     else _monstro = new Monstro(a, b, c, d, e, f, g);
-    //     return _monstro;
-    // }
-    // }
     _monstro =
         monstro.Nome === 'Ogro'
             ? new Ogro(a, b, c, d, e, f, g)
@@ -121,7 +102,7 @@ function iniciaCombate(jogador, monstro, tempo) {
         }
         function resolveTurno(ataca, defende) {
             exibirComPausa(
-                [`        ⤷ ${ataca.nome} ATACA ${defende.nome}     `],
+                [`\t\t⤷ ${ataca.nome} ATACA ${defende.nome}  `],
                 800,
             );
             if (roll + ataca.ataque >= 10 + defende.defesa) {
@@ -131,13 +112,13 @@ function iniciaCombate(jogador, monstro, tempo) {
                 ataca instanceof Player
                     ? exibirComPausa(
                           [
-                              `→    É UM ACERTO!  `,
+                              `→  É UM ACERTO!  `,
                               `→  Você causou ${dano} de dano no ${defende.nome}`,
                           ],
                           1250,
                       )
                     : exibirComPausa(
-                          [`→     Outch!  `, `→  Você sofreu ${dano} de dano`],
+                          [`  →  Outch!  `, `→  Você sofreu ${dano} de dano`],
                           1800,
                       );
                 exibirComPausa(' ', 2000);
@@ -345,10 +326,10 @@ function menuDeSalas(sala, tempo, actions) {
 }
 
 function menuDeSelecao(menu, a, b, c) {
-    console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}\n`);
+    console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}`);
     while (true) {
         try {
-            let selecao = parseInt(+prompt(`Número da ${menu} escolhida: `));
+            let selecao = parseInt(+prompt(` ⤷ Número da ${menu} escolhida: `));
 
             if (isNaN(selecao)) throw `\t\t\t\t\tentre com um número...`;
             if (menu === 'Ação de Combate') {
@@ -846,7 +827,7 @@ function main() {
             } else index_sala[1] = acao;
         } else {
             prompt(
-                `É uma pena...\t${
+                `\t\t⤷É uma pena...\t${
                     Sala.salas[index_sala[0]].guardiao.nome
                 } era forte demais pra você...`,
             );

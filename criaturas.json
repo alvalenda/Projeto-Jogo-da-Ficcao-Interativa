@@ -3,13 +3,13 @@
         [
             {
                 "Nome": "Rato Gigante",
-                "Atributos": ["Rato Gigante", 7, 1, 1, [1, 1]],
+                "Atributos": ["Rato Gigante", 7, 1, 1, [1, 0]],
                 "Nivel": 1,
                 "Arte": "\r\n                       ,     .\r\n                       (\\,;,/)\r\n                        (o o)\\//,\r\n                         \\ /     \\,\r\n                         `+'(  (   \\    )\r\n                            //  \\   |_./\r\n                          '~' '~----'        \n"
             },
             {
                 "Nome": "Goblin",
-                "Atributos": ["Goblin", 6, 0, 0, [2, 2]],
+                "Atributos": ["Goblin", 6, 0, 0, [2, 1]],
                 "Nivel": 1,
                 "Arte": "\n \n"
             }
@@ -19,13 +19,13 @@
                 "Nome": "Esqueleto",
                 "Atributos": ["Esqueleto", 10, 2, 2, [1, 2]],
                 "Nivel": 2,
-                "Arte": "                           .-.\r\n                          (o.o)\r\n                           |=|\r\n                          __|__\r\n                        //.=|=.\\\\\r\n                       // .=|=. \\\\\r\n                       \\\\ .=|=. //\r\n                        \\\\(_=_)//\r\n                         (:| |:)\r\n                          || ||\r\n                          () ()\r\n                          || ||\r\n                          || ||\r\n                         ==' '=="
+                "Arte": "                           .-.\r\n                          (o.o)\r\n                           |=|\r\n                          __|__\r\n                        //.=|=.\\\\\r\n                       // .=|=. \\\\\r\n                       \\\\ .=|=. //\r\n                        \\\\(_=_)//\r\n                         (:| |:)\r\n                          || ||\r\n                          () ()\r\n                          || ||\r\n                          || ||\r\n                       . ==' '==."
             },
             {
                 "Nome": "Zumbi",
                 "Atributos": ["Zumbi", 14, 1, 0, [2, 1]],
                 "Nivel": 2,
-                "Arte": "\n                            \uFE4F\uFE4F\uFE4F                                                  \r\n                             \u25EF \u25EF /                                                  \r\n                           /\u02C2   /    \r\n            ___ __________/_\u1F63_ /      \r\n            \u2570\\\\\\\u2570\\\\\\\\________   \\      \r\n             \uFE49\uFE49\uFE49\uFE49     \\      \\\r\n                          |'     |                                                   \r\n                          /o   __|                                                   \r\n                         //      |                                                   \r\n                        //\\______|                                                   \r\n                       (  _(   ;\u2215                                                    \r\n                        \\  \\   \\                                                   \r\n                         \\  \\   \\    \r\n                      .-'`,.-'` ,)                        \r\n                     `\"\"\"`\"`\"\"\"\"`\"`\n"
+                "Arte": "                            \uFE4F\uFE4F\uFE4F                                                  \r\n                             \u25EF \u25EF /                                                  \r\n                           /\u02C2   /    \r\n            ___ __________/_\u1F63_ /      \r\n            \u2570\\\\\\\u2570\\\\\\\\________   \\      \r\n             \uFE49\uFE49\uFE49\uFE49     \\      \\\r\n                          |'     |                                                   \r\n                          /o   __|                                                   \r\n                         //      |                                                   \r\n                        //\\______|                                                   \r\n                       (  _(   ;\u2215                                                    \r\n                        \\  \\   \\                                                   \r\n                         \\  \\   \\    \r\n                      .-'`,.-'` ,)                        \r\n                     `\"\"\"`\"`\"\"\"\"`\"`"
             }
         ],
         [
