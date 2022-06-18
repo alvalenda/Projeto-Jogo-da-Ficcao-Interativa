@@ -110,7 +110,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 ataca instanceof Player
                     ? exibirComPausa(
                           [
-                              `→  É UM ACERTO!  `,
+                              `→  É UM ACERTO  `,
                               `→  Você causou ${dano} de dano no ${defende.nome}`,
                           ],
                           1250,
@@ -327,20 +327,19 @@ function menuDeSelecao(menu, a, b, c) {
     console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}`);
     while (true) {
         try {
-            let selecao = parseInt(+prompt(` ⤷ Número da ${menu} escolhida: `));
+            let num = parseInt(+prompt(`  ⤷  Número da ${menu} escolhida `));
 
-            if (isNaN(selecao)) throw `\t\t\t\t\tentre com um número...`;
+            if (isNaN(num)) throw `\t\t\t\t\tentre com um número...`;
             if (menu === 'Ação de Combate') {
-                if (selecao < 0 || selecao > 3)
+                if (num < 0 || num > 3)
                     throw `\t\t\t\t\tOpção inválida! Entre com 1, 2, 3 ou vazio para ATACAR`;
-            } else if (selecao < 1 || selecao > 3)
+            } else if (num < 1 || num > 3)
                 throw `\t\t\t\t\tOpção inválida! Entre com 1, 2 ou 3`;
             if (menu === 'RAÇA') {
-                selecao =
-                    selecao == 1 ? 'Humano' : selecao === 2 ? 'Anão' : 'Elfo';
+                num = num == 1 ? 'Humano' : num === 2 ? 'Anão' : 'Elfo';
             }
-            // Se selecao == 0 -> retorna 1 -> é 0 se não digitar nada -> ataca sem ter que digitar ;)
-            return selecao ? selecao : 1;
+            // Se num == 0 -> retorna 1 -> é 0 se não digitar nada -> ataca sem ter que digitar ;)
+            return num ? num : 1;
         } catch (err) {
             console.log(err, menu);
         }
@@ -552,16 +551,14 @@ class Personagem {
     }
 
     get arma() {
-        const arma = this._equip.Arma;
-        return arma;
+        return this._equip.Arma;
     }
     set arma(num) {
         this._equip.Arma += num;
     }
 
     get armadura() {
-        const armadura = this._equip.Armadura;
-        return armadura;
+        return this._equip.Armadura;
     }
     set armadura(num) {
         this._equip.Armadura += num;
