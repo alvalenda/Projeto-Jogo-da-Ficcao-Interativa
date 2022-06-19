@@ -47,11 +47,13 @@ function imprimeObjeto(objeto) {
     }
 }
 
-function iniciaJogo(index_sala, dia, acoes, fugiu, jogador, restart = false) {
+function iniciaJogo(index_sala, data, fugiu, jogador, restart = false) {
     Sala.reiniciaSalas();
     criarSala('SalaInicial');
     [index_sala[0], index_sala[1]] = [0, 0];
-    [dia, acoes, fugiu] = [0, 0, 'não'];
+    data.Dia = 0;
+    data.Acoes = 0;
+    fugiu = 'não';
 
     restart
         ? jogador.reiniciaPersonagem()
@@ -81,7 +83,7 @@ function criarSala(indexmae) {
     indexmae != 'SalaInicial'
         ? Sala.salas.push(new Sala(indexmae))
         : Sala.salas.push(new Cela(indexmae));
-    Sala.num_salas++;
+    Sala.num_salas += 1;
     return Sala.num_salas - 1;
 }
 
@@ -373,7 +375,8 @@ function venceBatalha(jogador, nivel) {
 }
 
 function perdeBatalha(jogador) {
-    prompt(`${jogador.nome} foi derrotado!`);
+    exibirComPausa(`${jogador.nome} foi derrotado!`, 25);
+    exibirComPausa('\n', 2000);
 }
 /*
     CLASSES
@@ -405,9 +408,7 @@ class Sala {
 
     static reiniciaSalas() {
         this.num_salas = 0;
-        for (const sala of this.salas) {
-            this.salas.pop(sala);
-        }
+        this.salas = [];
     }
 
     setNivel(num) {
@@ -630,7 +631,7 @@ class Player extends Personagem {
                 this._sucata,
                 this._inimigos,
                 this.alive,
-            ] = [bonus, bonus, bonus, 0, 0, 0, 0, 0, true]);
+            ] = [bonus, bonus, bonus, 0, 0, 1, 0, 0, true]);
 
         this.iniciaAtributos(this._race);
     }
@@ -832,24 +833,25 @@ function main() {
         playerName(),
         menuDeSelecao('RAÇA', 'Humano   👨‍🌾', 'Anão \t👳', 'Elfo \t🧝'),
     );
-    let [dia, acoes, fugiu] = [0, 0, 'não'];
-    iniciaJogo(index_sala, dia, acoes, fugiu, player, false);
+    let data = { Dia: 0, Acoes: 0 };
+    let fugiu = 'não';
+    iniciaJogo(index_sala, data, fugiu, player, false);
 
     loopPrincipal: while (true) {
-        fugiu = Sala.entraSala(index_sala[0], player, dia, acoes);
+        fugiu = Sala.entraSala(index_sala[0], player, data.Dia, data.Acoes);
 
         if (fugiu === 'fugiu') {
             index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
             fugiu = 0;
         } else if (player.alive) {
             // SE VIVO DORME
-            if (acoes === 3) {
-                iniciaDormir(player, dia);
-                dia++;
-                acoes = 0;
+            if (data.Acoes === 3) {
+                iniciaDormir(player, data.Dia);
+                data.Dia += 1;
+                data.Acoes = 0;
             }
             const acao = Number(
-                menuDeSalas(Sala.salas[index_sala[0]], dia, acoes),
+                menuDeSalas(Sala.salas[index_sala[0]], data.Dia, data.Acoes),
             );
             if (acao === 0)
                 index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
@@ -869,15 +871,16 @@ function main() {
                 } e cai desacordado...\n`,
                 25,
             );
-            exibirComPausa('\nDejesa continuar jogando? ', 2000);
+            exibirComPausa('\nDejesa continuar jogando? ', 25);
             const continua = menuDeSelecao('opção', 'SIM', 'NAO', ' ');
             continua == 1
                 ? (exibirComPausa(
                       `\n\tVocê acorda na cela de uma prisão escura...\n\tfoi tudo um sonho? Precisamos sair daqui para saber...`,
                       25,
                   ),
-                  exibirComPausa('\n', 2000),
-                  iniciaJogo(index_sala, dia, acoes, fugiu, player, true))
+                  (exibirComPausa('\n', 2000),
+                  iniciaJogo(index_sala, data, fugiu, player, true)),
+                  (data.Acoes = -1))
                 : (exibirComPausa(
                       '\n\tVocê lutou bravamente até a sua última gota de suor',
                       20,
@@ -887,8 +890,8 @@ function main() {
                       20,
                   ),
                   (exibirComPausa(
-                      `\n\t\t\t\tDescanse em paz ${player.nome}...`,
-                      20,
+                      `\n\n\t\t\t\t\tDescanse em paz ${player.nome}...\n`,
+                      25,
                   ),
                   exibirComPausa('\n', 2000),
                   (index_sala[1] = -1)));
@@ -898,7 +901,7 @@ function main() {
         if (index_sala[1] === -1) break loopPrincipal;
         console.log(index_sala[0], index_sala[1], 147);
         index_sala[0] = index_sala[1];
-        acoes += 1;
+        data.Acoes += 1;
     }
 }
 main();
