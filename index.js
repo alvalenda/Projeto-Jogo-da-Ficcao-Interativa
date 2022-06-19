@@ -363,13 +363,10 @@ function menuDeSelecao(menu, a, b, c) {
 function venceBatalha(jogador, nivel) {
     const xp = 4 * nivel;
     const su = rollaDado(2) + rollaDado(2) + nivel;
-    exibirComPausa(
-        [`\n\tVocê venceu a Batalha!`],
-        [`\t ${xp} pontos de experiência obtidos`],
-        [`\n\t\t\t\t ${su} sucatas encontradas na sala`],
-        1000,
-    );
-    exibirComPausa(' ', 1500);
+    exibirComPausa([`\n\tVocê venceu a Batalha!`], 100);
+    exibirComPausa([`\t ${xp} pontos de experiência obtidos`], 1000);
+    exibirComPausa([`\n\t\t\t\t ${su} sucatas encontradas na sala`], 1000);
+    exibirComPausa('\n', 1500);
     jogador.xp = xp;
     jogador.sucata = su;
     jogador.inimigos = nivel;
@@ -458,7 +455,7 @@ class Sala {
             ? (fuga = this.salas[index].combateSala(jogador, tempo))
             : (exibirComPausa(
                   `\n\t\tVocê entrou na ${Sala.salas[index].nome}`,
-                  1500,
+                  25,
               ),
               exibirComPausa(' ', 1500));
 
