@@ -11,7 +11,7 @@ let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
 function playerName() {
     while (true) {
         try {
-            const nome = prompt(`Qual é o seu nome SOBREVIVENTE...? `)
+            const nome = prompt(`Qual é o seu nome AVENTUREIRO? `)
                 .trim()
                 .toLowerCase();
             if (nome.length < 3) throw `Seu nome deve é curto demais...`;
@@ -48,13 +48,13 @@ function imprimeObjeto(objeto) {
 }
 
 function iniciaJogo(index_sala, dia, acoes, fugiu, jogador, restart = false) {
-    Sala.reiniciaSalas;
+    Sala.reiniciaSalas();
     criarSala('SalaInicial');
     [index_sala[0], index_sala[1]] = [0, 0];
     [dia, acoes, fugiu] = [0, 0, 'não'];
 
     restart
-        ? jogador.restart
+        ? jogador.reiniciaPersonagem()
         : (exibirComPausa('\n\t\tJogo Iniciado\n', 25),
           exibirComPausa(' ', 1500));
 }
@@ -338,10 +338,10 @@ function menuDeSalas(sala, tempo, actions) {
 }
 
 function menuDeSelecao(menu, a, b, c) {
-    console.log(`[1] - ${a}\n[2] - ${b} \n[3] - ${c}`);
+    console.log(`\n[1] - ${a}\n[2] - ${b} \n[3] - ${c}`);
     while (true) {
         try {
-            let num = parseInt(+prompt(`  ⤷  Número da ${menu} escolhida `));
+            let num = parseInt(+prompt(`  ⤷  Número da ${menu} escolhida: `));
 
             if (isNaN(num)) throw `\t\t\t\t\tentre com um número...`;
             if (menu === 'Ação de Combate') {
@@ -395,14 +395,6 @@ class Sala {
         for (let i = 0; i < Math.floor(Math.random() * 3 + 1); i++) {
             this.portas.Filha.push('Fechada');
         }
-
-        // for (let i = 0; i < monstros.Monstros.length; i++) {
-        //     if (monstros.Monstros[i].Nivel === this._nivel) {
-        //         const guardiao = monstros.Monstros[i].Nome;
-        //         this.guardiao = criarMonstro(guardiao);
-        //         break;
-        //     }
-        // }
     }
 
     static imprimeSalas() {
@@ -465,7 +457,7 @@ class Sala {
                 `\n\nO monstro já foi derrotado. Você pode fazer algo antes de prosseguir...\n`,
                 25,
             );
-            prompt();
+            exibirComPausa('\n', 2500);
             console.clear();
             loopMenuSala: while (true) {
                 console.log(
@@ -610,9 +602,9 @@ class Player extends Personagem {
     constructor(nome, race) {
         super(nome);
         this._pv = { Atual: 0, Total: 0 };
-        this._forca;
-        this._agilidade;
-        this._robustez;
+        this._forca = 0;
+        this._agilidade = 0;
+        this._robustez = 0;
         this._equip = { Arma: 0, Armadura: 0 };
         this._item = { Bandagem: 0, Pocao: 0 };
         this._xp = 0;
@@ -626,6 +618,7 @@ class Player extends Personagem {
     }
 
     reiniciaPersonagem() {
+        const bonus = Math.floor(this.nivel / 3);
         this._equip.Arma,
             ([
                 this._forca,
@@ -637,7 +630,7 @@ class Player extends Personagem {
                 this._sucata,
                 this._inimigos,
                 this.alive,
-            ] = [0, 0, 0, 0, 0, 0, 0, 0, true]);
+            ] = [bonus, bonus, bonus, 0, 0, 0, 0, 0, true]);
 
         this.iniciaAtributos(this._race);
     }
@@ -749,7 +742,8 @@ class Player extends Personagem {
         if (xp >= nextLVL) {
             this.nivel++;
             console.clear();
-            prompt(`\n\tVOCE AVANÇOU PARA O NÍVEL ${this.nivel}`);
+            exibirComPausa(`\n\tVOCE AVANÇOU PARA O NÍVEL ${this.nivel}`, 25);
+            exibirComPausa(' ', 1800);
             console.log(
                 'Você tem',
                 1,
@@ -786,16 +780,16 @@ class Player extends Personagem {
 
     iniciaAtributos(race) {
         if (race === 'Anão') {
-            [this._forca, this._agilidade, this._robustez] = [4, 2, 5];
+            [this.forca, this.agilidade, this.robustez] = [4, 2, 5];
             this.armadura = 1;
         } else if (race === 'Elfo') {
-            [this._forca, this._agilidade, this._robustez] = [3, 4, 4];
+            [this.forca, this.agilidade, this.robustez] = [3, 4, 4];
             this.arma = 1;
         } else if (race === 'Humano') {
-            [this._forca, this._agilidade, this._robustez] = [4, 4, 4];
+            [this.forca, this.agilidade, this.robustez] = [4, 4, 4];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
-            [this._forca, this._agilidade, this._robustez] = [3, 3, 25];
+            [this.forca, this.agilidade, this.robustez] = [3, 3, 25];
         }
         [this._pv.Atual, this._pv.Total] = [
             this._robustez * 2 + 1,
@@ -869,12 +863,35 @@ function main() {
                 }
             } else index_sala[1] = acao;
         } else {
-            prompt(
-                `\t\t⤷É uma pena...\t${
+            exibirComPausa(
+                `\t\t⤷Você recebe o golpe final de ${
                     Sala.salas[index_sala[0]].guardiao.nome
-                } era forte demais pra você...`,
+                } e cai desacordado...\n`,
+                25,
             );
-            index_sala[1] = -1;
+            exibirComPausa('\nDejesa continuar jogando? ', 2000);
+            const continua = menuDeSelecao('opção', 'SIM', 'NAO', ' ');
+            continua == 1
+                ? (exibirComPausa(
+                      `\n\tVocê acorda na cela de uma prisão escura...\n\tfoi tudo um sonho? Precisamos sair daqui para saber...`,
+                      25,
+                  ),
+                  exibirComPausa('\n', 2000),
+                  iniciaJogo(index_sala, dia, acoes, fugiu, player, true))
+                : (exibirComPausa(
+                      '\n\tVocê lutou bravamente até a sua última gota de suor',
+                      20,
+                  ),
+                  exibirComPausa(
+                      `\n\tInfelizmente a história do nosso ${player.race} preferido chegou ao fim...`,
+                      20,
+                  ),
+                  (exibirComPausa(
+                      `\n\t\t\t\tDescanse em paz ${player.nome}...`,
+                      20,
+                  ),
+                  exibirComPausa('\n', 2000),
+                  (index_sala[1] = -1)));
         }
 
         if (index_sala[1] === -99) break loopPrincipal;
