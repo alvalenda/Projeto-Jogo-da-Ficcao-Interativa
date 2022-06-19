@@ -108,3 +108,4 @@ dist
 .prettierrc.json*
 package-lock.json*
 package.json*
+teste.js*

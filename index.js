@@ -47,6 +47,18 @@ function imprimeObjeto(objeto) {
     }
 }
 
+function iniciaJogo(index_sala, dia, acoes, fugiu, jogador, restart = false) {
+    Sala.reiniciaSalas;
+    criarSala('SalaInicial');
+    [index_sala[0], index_sala[1]] = [0, 0];
+    [dia, acoes, fugiu] = [0, 0, 'não'];
+
+    restart
+        ? jogador.restart
+        : (exibirComPausa('\n\t\tJogo Iniciado\n', 25),
+          exibirComPausa(' ', 1500));
+}
+
 function criarMonstro(monstro) {
     let _monstro;
     const [a, b, c, d, e, f, g] = [
@@ -135,7 +147,7 @@ function iniciaCombate(jogador, monstro, tempo) {
                 10 + monstro.nivel + monstro.agilidade
             ) {
                 exibirComPausa(
-                    [`→\tSUCESSO! Você fogiu para a sala anterior`],
+                    [`→\tSUCESSO! Você fugiu para a sala anterior`],
                     2000,
                 );
                 exibirComPausa('\n', 2000);
@@ -230,7 +242,7 @@ function iniciaDormir(jogador, dia) {
                 case 6:
                     jogador.inimigos = -jogador.inimigos;
                     exibirComPausa(
-                        `\t\t    Você procura um canto e se cobre com escombros, você dorme. 
+                        `\n\t\t    Você procura um canto e se cobre com escombros, você dorme. 
                     Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
                     O dia ${
                         dia + 1
@@ -304,9 +316,9 @@ function menuDeSalas(sala, tempo, actions) {
                 .trim()
                 .toLowerCase();
             if (acoes[acao]) {
-                prompt(
+                exibirComPausa(
                     `\t\t\t\t\t Você decidiu ir para a ${
-                        Number(acao)
+                        acao
                             ? sala.portas.Filha[acao - 1] === 'Fechada'
                                 ? acao + 'ª Porta Fechada'
                                 : 'Porta da Sala ' + sala.portas.Filha[acao - 1]
@@ -314,7 +326,9 @@ function menuDeSalas(sala, tempo, actions) {
                             ? 'Sala ' + sala.portas.Mae
                             : 'Cela da Prisão'
                     }...`,
+                    25,
                 );
+                exibirComPausa(' ', 1800);
                 return acao;
             }
         } catch (err) {
@@ -349,9 +363,13 @@ function menuDeSelecao(menu, a, b, c) {
 function venceBatalha(jogador, nivel) {
     const xp = 4 * nivel;
     const su = rollaDado(2) + rollaDado(2) + nivel;
-    prompt(
-        `\n\tVocê venceu a Batalha!\t ${xp} pontos de experiência obtidos\n\t\t\t\t ${su} sucatas encontradas na sala`,
+    exibirComPausa(
+        [`\n\tVocê venceu a Batalha!`],
+        [`\t ${xp} pontos de experiência obtidos`],
+        [`\n\t\t\t\t ${su} sucatas encontradas na sala`],
+        1000,
     );
+    exibirComPausa(' ', 1500);
     jogador.xp = xp;
     jogador.sucata = su;
     jogador.inimigos = nivel;
@@ -396,6 +414,13 @@ class Sala {
         }
     }
 
+    static reiniciaSalas() {
+        this.num_salas = 0;
+        for (const sala of this.salas) {
+            this.salas.pop(sala);
+        }
+    }
+
     setNivel(num) {
         /* Toda sala tem 10% de ser nível - 1 e 10% de ser de um nível + 1 
            Salas de nível 1 não podem retornar nível 0                    */
@@ -431,13 +456,19 @@ class Sala {
         let fuga = false;
         this.salas[index].guardiao.alive
             ? (fuga = this.salas[index].combateSala(jogador, tempo))
-            : prompt(`Você entrou na ${Sala.salas[index].nome}`);
+            : (exibirComPausa(
+                  `\n\t\tVocê entrou na ${Sala.salas[index].nome}`,
+                  1500,
+              ),
+              exibirComPausa(' ', 1500));
 
         if (fuga === 'fugiu') return fuga;
         if (index && acoes < 3 && jogador.alive) {
-            console.log(
-                `\n\nComo o monstro foi derrotado, você pode fazer algo antes de prosseguir...\n`,
+            exibirComPausa(
+                `\n\nO monstro já foi derrotado. Você pode fazer algo antes de prosseguir...\n`,
+                25,
             );
+            prompt();
             console.clear();
             loopMenuSala: while (true) {
                 console.log(
@@ -458,9 +489,10 @@ class Sala {
                 } else if (menu === 2) {
                     jogador.usarItem('Bandagem');
                 } else if (menu === 3) {
-                    prompt(
+                    console.log(
                         '\t\t\t\t\tok... você oberva as Portas desta sala...',
                     );
+                    exibirComPausa(' ', 1500);
                     break loopMenuSala;
                 }
                 console.clear();
@@ -595,6 +627,24 @@ class Player extends Personagem {
 
         this.iniciaAtributos(this._race);
     }
+
+    reiniciaPersonagem() {
+        this._equip.Arma,
+            ([
+                this._forca,
+                this._agilidade,
+                this._robustez,
+                this._equip.Armadura,
+                this._xp,
+                this.nivel,
+                this._sucata,
+                this._inimigos,
+                this.alive,
+            ] = [0, 0, 0, 0, 0, 0, 0, 0, true]);
+
+        this.iniciaAtributos(this._race);
+    }
+
     get robustez() {
         return this._robustez;
     }
@@ -784,14 +834,15 @@ class Ogro extends Monstro {
    COMEÇA O JOGO:: MAIN()
 */
 function main() {
+    // introdução
+
+    const index_sala = [0, 0];
     const player = new Player(
         playerName(),
         menuDeSelecao('RAÇA', 'Humano   👨‍🌾', 'Anão \t👳', 'Elfo \t🧝'),
     );
-    // const player = new Player(playerName(), 'DEUS');
-    criarSala('SalaInicial');
-    const index_sala = [0, 0];
     let [dia, acoes, fugiu] = [0, 0, 'não'];
+    iniciaJogo(index_sala, dia, acoes, fugiu, player, false);
 
     loopPrincipal: while (true) {
         fugiu = Sala.entraSala(index_sala[0], player, dia, acoes);
