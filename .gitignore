@@ -108,4 +108,5 @@ dist
 .prettierrc.json*
 package-lock.json*
 package.json*
+criaturas_copy.json*
 teste.js*
