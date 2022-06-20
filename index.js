@@ -140,10 +140,10 @@ function cenaFinal(jogador) {
         }
         exibirCena(dados.Textos.preFinal.Resolve, exibirComPausa);
         exibirComPausa(
-            '\n\t"Blópi testar força de amigo de gatinho..."\n\tVocê enfrentará Blópi...',
+            '\n\n\t\t"Blópi testar força de amigo de gatinho..."\n\t\tVocê enfrentará Blópi...',
             25,
         );
-        exibirComPausa(' ', 1800);
+        exibirComPausa(' ', 2000);
         iniciaCombate(
             jogador,
             criarMonstro(dados.Monstros[7][0]),
@@ -869,15 +869,20 @@ class Player extends Personagem {
     comerInimigos() {
         if (this.inimigos) {
             const cura = 1;
-            prompt(
-                `Você se prepara para cozinhar os inimigos derrotados hoje.`,
+            exibirComPausa(
+                `\n\t\tVocê se prepara para cozinhar suprimentos pilhado de seus inimigos.`,
+                25,
             );
-            prompt(`\t\t\t\t\tVocê recuperou ${cura} pontos de vida!`);
+            exibirComPausa(
+                `\n\t\t\t\t\tVocê recuperou ${cura} pontos de vida!`,
+                25,
+            );
             this.pv = cura;
             this.inimigos = -1;
         } else {
-            prompt(`Você não derrotou nenhum inimigo hoje...`);
+            exibirComPausa(`\nVocê não tem nenhum suprimento...`, 25);
         }
+        exibirComPausa(' ', 1500);
     }
 
     subirLVL(xp) {
