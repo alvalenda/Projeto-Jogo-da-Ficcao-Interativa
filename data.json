@@ -60,25 +60,33 @@
         ],
         [
             {
+                "Nome": "Bruxão",
+                "Atributos": ["Bruxão", 45, 3, 3, [3, 3]],
+                "Nivel": 6,
+                "Arte": "                   .-.\r\n          \\\\\\V/// (o.o)\r\n          #######  |=|\r\n         //6 , 6\\\\  Y\r\n          \\  =  /   |\r\n         .-:---:---'B\r\n        /   `@` ,--'|\r\n       ( <|'   '|   |\r\n        \\ \\__.__/   |\r\n         `/<<<<<\\   |\r\n         (>>>>>>>)  |\r\n         `\"|\"|\"|\"`  |\r\n           |_| |    |\r\n         (___|___)  |\n"
+            }
+        ],
+        [
+            {
+                "Nome": "Bruxãozão",
+                "Atributos": ["Bruxãozão", 55, 4, 4, [4, 4]],
+                "Nivel": 7,
+                "Arte": "                   .-.\r\n          \\\\\\V/// (o.o)\r\n          #######  |=|\r\n         //6 , 6\\\\  Y\r\n          \\  =  /   |\r\n         .-:---:---'B\r\n        /   `@` ,--'|\r\n       ( <|'   '|   |\r\n        \\ \\__.__/   |\r\n         `/<<<<<\\   |\r\n         (>>>>>>>)  |\r\n         `\"|\"|\"|\"`  |\r\n           |_| |    |\r\n         (___|___)  |\n"
+            }
+        ],
+        [
+            {
                 "Nome": "Ogro",
                 "Atributos": ["Blopiii", 45, 4, 2, [4, 2]],
-                "Nivel": 6,
-                "Arte": "\n                          __,='`````'=/__\r\n                          '//  (o) \\(o) \\ `'         _,-,\r\n                          //|     ,_)   (`\\      ,-'`_,-\\\r\n                        ,-~~~\\  `'==='  /-,      \\==```` \\__\r\n                       /        `----'     `\\     \\       \\/\r\n                    ,-`                  ,   \\  ,.-\\       \\\r\n                   /      ,               \\,-`\\`_,-`\\_,..--'\\\r\n                  ,`    ,/,              ,>,   )     \\--`````\\\r\n                  (      `\\`---'`  `-,-'`_,<   \\      \\_,.--'`\r\n                   `.      `--. _,-'`_,-`  |    \\\r\n                    [`-.___   <`_,-'`------(    /\r\n                    (`` _,-\\   \\ --`````````|--`\r\n                     >-`_,-`\\,-` ,          |\r\n                   <`_,'     ,  /\\          /\r\n                    `  \\/\\,-/ `/  \\/`\\_/V\\_/\r\n                       (  ._. )    ( .__. )\r\n                       |      |    |      |\r\n                        \\,---_|    |_---./\r\n                        ooOO(_)    (_)OOoo\n"
-            }
-        ],
-        [
-            {
-                "Nome": "Ogro",
-                "Atributos": ["Blopiii Furioso", 55, 5, 2, [5, 2]],
-                "Nivel": 7,
-                "Arte": "\n                          __,='`````'=/__\r\n                          '//  (o) \\(o) \\ `'         _,-,\r\n                          //|     ,_)   (`\\      ,-'`_,-\\\r\n                        ,-~~~\\  `'==='  /-,      \\==```` \\__\r\n                       /        `----'     `\\     \\       \\/\r\n                    ,-`                  ,   \\  ,.-\\       \\\r\n                   /      ,               \\,-`\\`_,-`\\_,..--'\\\r\n                  ,`    ,/,              ,>,   )     \\--`````\\\r\n                  (      `\\`---'`  `-,-'`_,<   \\      \\_,.--'`\r\n                   `.      `--. _,-'`_,-`  |    \\\r\n                    [`-.___   <`_,-'`------(    /\r\n                    (`` _,-\\   \\ --`````````|--`\r\n                     >-`_,-`\\,-` ,          |\r\n                   <`_,'     ,  /\\          /\r\n                    `  \\/\\,-/ `/  \\/`\\_/V\\_/\r\n                       (  ._. )    ( .__. )\r\n                       |      |    |      |\r\n                        \\,---_|    |_---./\r\n                        ooOO(_)    (_)OOoo\n"
-            }
-        ],
-        [
-            {
-                "Nome": "Ogro",
-                "Atributos": ["Blopiii Furioso", 65, 6, 4, [6, 3]],
                 "Nivel": 8,
+                "Arte": "\n                          __,='`````'=/__\r\n                          '//  (o) \\(o) \\ `'         _,-,\r\n                          //|     ,_)   (`\\      ,-'`_,-\\\r\n                        ,-~~~\\  `'==='  /-,      \\==```` \\__\r\n                       /        `----'     `\\     \\       \\/\r\n                    ,-`                  ,   \\  ,.-\\       \\\r\n                   /      ,               \\,-`\\`_,-`\\_,..--'\\\r\n                  ,`    ,/,              ,>,   )     \\--`````\\\r\n                  (      `\\`---'`  `-,-'`_,<   \\      \\_,.--'`\r\n                   `.      `--. _,-'`_,-`  |    \\\r\n                    [`-.___   <`_,-'`------(    /\r\n                    (`` _,-\\   \\ --`````````|--`\r\n                     >-`_,-`\\,-` ,          |\r\n                   <`_,'     ,  /\\          /\r\n                    `  \\/\\,-/ `/  \\/`\\_/V\\_/\r\n                       (  ._. )    ( .__. )\r\n                       |      |    |      |\r\n                        \\,---_|    |_---./\r\n                        ooOO(_)    (_)OOoo\n"
+            }
+        ],
+        [
+            {
+                "Nome": "Ogro",
+                "Atributos": ["Blopiii Furioso", 66, 6, 6, [6, 6]],
+                "Nivel": 9,
                 "Arte": "\n                          __,='`````'=/__\r\n                          '//  (o) \\(o) \\ `'         _,-,\r\n                          //|     ,_)   (`\\      ,-'`_,-\\\r\n                        ,-~~~\\  `'==='  /-,      \\==```` \\__\r\n                       /        `----'     `\\     \\       \\/\r\n                    ,-`                  ,   \\  ,.-\\       \\\r\n                   /      ,               \\,-`\\`_,-`\\_,..--'\\\r\n                  ,`    ,/,              ,>,   )     \\--`````\\\r\n                  (      `\\`---'`  `-,-'`_,<   \\      \\_,.--'`\r\n                   `.      `--. _,-'`_,-`  |    \\\r\n                    [`-.___   <`_,-'`------(    /\r\n                    (`` _,-\\   \\ --`````````|--`\r\n                     >-`_,-`\\,-` ,          |\r\n                   <`_,'     ,  /\\          /\r\n                    `  \\/\\,-/ `/  \\/`\\_/V\\_/\r\n                       (  ._. )    ( .__. )\r\n                       |      |    |      |\r\n                        \\,---_|    |_---./\r\n                        ooOO(_)    (_)OOoo\n"
             }
         ]
@@ -108,9 +116,10 @@
                 "\n                \u3000\u3000     \u2591            \u2591    \r\n                \u3000\u3000    \u2592\u2592\u2591          \u2591\u2592\u2592  \r\n                \u3000\u3000   \u2591\u2592\u2592\u2592\u2591        \u2591\u2592\u2592\u2592\u2591  \r\n                \u3000\u3000  \u2591\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2591 \r\n                \u3000\u3000\u2591\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2591\r\n                \u3000 \u2588\u2588\u2588\u2580\u2580\u2580\u2588\u2588\u2584\u2592\u2592\u2592\u2592\u2592\u2592\u2592\u2584\u2588\u2588\u2580\u2580\u2580\u2588\u2588\r\n                \u3000 \u2588\u2588\u2591\u2591\u2591\u2590\u2588\u2591\u2580\u2588\u2592\u2592\u2592\u2592\u2592\u2588\u2580\u2591\u2588\u258C\u2591\u2591\u2591\u2588\r\n                \u3000 \u2590\u258C\u2591\u2591\u2591\u2590\u2584\u258C\u2591\u2590\u258C\u2592\u2592\u2592\u2590\u258C\u2591\u2590\u2584\u258C\u2591\u2591\u2590\u258C\r\n                \u3000\u3000\u2588\u2591\u2591\u2591\u2590\u2588\u258C\u2591\u2591\u258C\u2592\u2592\u2592\u2590\u2591\u2591\u2590\u2588\u258C\u2591\u2591\u2588\r\n                \u3000\u3000\u2592\u2580\u2584\u2584\u2584\u2588\u2584\u2584\u2584\u258C\u2591\u2584\u2591\u2590\u2584\u2584\u2584\u2588\u2584\u2584\u2580\u2592     . . : miau\r\n                \u3000\u3000\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2514\u2534\u2518\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\r\n                \u3000\u3000    \u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591          \r\n                \u3000\u3000        \u2592\u2592\u2592\u2592\u2592\u2592                   \r\n                 \u2591\u2591        \u2592\u2592\u2591\u2591\u2592\u2591\u2591\u2592                  \r\n                 \u2592\u2591        \u2592\u2592\u2556\u2591\u2591\u2565\u2591\u2591\u2553\u2592               \r\n                  \u2592\u2591       \u2591\u2591\u2551\u2591\u2591\u2551\u2591\u2591\u2551\u2591\u2591             \r\n                  \u2588\u2588\u2584\u2584\u2584\u2584\u2580\u2580\u2534\u2534\u255A\u2567\u2567\u255D\u2567\u2567\u255D\u2534\u2534      \r\n \r\n",
                 "\n\t\tVocê ataca o GATINHO!!!!\n\n\t\tvupit...\n\n\t\tEle se esquiva com uma velocidade sobrenatural e corre miando em direção a sala seguinte...\n\n\t\tUma voz grossa e lenta grita de lá:\n\t\t- \"Quem atacar gatinho de Blóóópiii???\"\n\n\t\tO chão treme enquanto você ouve passos, uma figura gigantesca segurando um tacape e vestindo roupa\n\t de pele de animais surge pela porta.\n\n\t\tVocê enfrentará o Blopi Enfurecido!"
             ],
-            "Intro": "\n\t\tAo entrar nesta sala você encontra um cômodo vazio, com exceção de um gatinho. Não, você não está\n\tficando louco, é o mesmo gatinho que você viu no Festival.\n\n\t\tO que você deseja fazer com o gatinho?",
+            "Intro": "\n\t\tAo entrar nesta sala você encontra um cômodo vazio, com exceção de um gatinho. Não, você não está\n\tficando louco, é o mesmo gatinho que você viu no Festival.\n\n\t\tOlhe pra ele, ele é tão bonitinho.",
             "Resolve": "\n\t\tO gatinho se vira e vai embora lentamente, a medida que ele entre na próxima sala você percebe\n\t que há luz vindo dela... LUZ DO SOL!\n\n\t\tAo entrar na sala você encontra uma figura gigantesca brincando com o gatinho, ele se vira pra\n\t você e diz:"
         },
-        "Final": "\n\t\tVocê derrou o Ogro Blópi!!!\n\n\t\tBlópi possui alguns cantis de Hidromel e ele te presenteia com alguns, em respeito a sua força e coragem.\n\n\t\t\"Ahhhhh... que delícia!\" o gosto do hidromel e da liberdade.\n\n\t\tVocê está livre e embriagado, se te perguntarem se isso tudo valeu a pena tenho certeza que você dirá que sim.\n\n\t\tParabéns!!! Você se tornou um herói.\n\n"
+        "Final": "\n\t\tVocê derrou o Ogro Blópi!!!\n\n\t\tBlópi possui alguns cantis de Hidromel e ele te presenteia com alguns, em respeito a sua força e coragem.\n\n\t\t\"Ahhhhh... que delícia!\" o gosto do hidromel e da liberdade.\n\n\t\tVocê está livre e embriagado, se te perguntarem se isso tudo valeu a pena tenho certeza que você dirá que sim.\n\n\t\tParabéns!!! Você se tornou um herói.\n\n",
+        "Derrota": "\n\t\tVocê foi derrotado pelo Ogro Blópi!!!\n\n\t\t\"Blópi achar você fraco...\"\n\t\t\"Você voltar pra cela...\"\n\n\t\tApós ser espancado e humilhado você se encontra novamente preso em uma cela fria e escura\n\n\t\tUm triste fim para o nosso herói...\n\n"
     }
 }

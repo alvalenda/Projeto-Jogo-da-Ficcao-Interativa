@@ -112,6 +112,52 @@ function cenaInicial(jogador) {
     return;
 }
 
+function cenaFinal(jogador) {
+    exibirCena(dados.Textos.preFinal.Intro, exibirComPausa);
+    console.log('\n\nO que você deseja fazer com o gatinho?\n');
+
+    const menu = menuDeSelecao(
+        'opção',
+        'Deixar o gatinho em paz',
+        'Dar sua comida para o gatinho',
+        'Atacar o gatinho',
+    );
+    let _agrediu = false;
+
+    if (menu === 3) {
+        exibirCena(dados.Textos.preFinal.miau[2], exibirComPausa);
+        _agrediu = true;
+        iniciaCombate(
+            jogador,
+            criarMonstro(dados.Monstros[8][0]),
+            'Luta Final',
+        );
+    } else {
+        if (menu === 1) {
+            exibirCena([dados.Textos.preFinal.miau[0]], exibirComPausa);
+        } else if (menu === 2) {
+            exibirCena([dados.Textos.preFinal.miau[1]], exibirComPausa);
+        }
+        exibirCena(dados.Textos.preFinal.Resolve, exibirComPausa);
+        exibirComPausa(
+            '\n\t"Blópi testar força de amigo de gatinho..."\n\tVocê enfrentará Blópi...',
+            25,
+        );
+        exibirComPausa(' ', 1800);
+        iniciaCombate(
+            jogador,
+            criarMonstro(dados.Monstros[7][0]),
+            'Luta Final',
+        );
+    }
+
+    jogador.alive
+        ? exibirCena(dados.Textos.Final, exibirComPausa)
+        : exibirCena(dados.Textos.Derrota, exibirComPausa);
+
+    return jogador.alive;
+}
+
 function criarMonstro(monstro) {
     let _monstro;
     const [a, b, c, d, e, f, g] = [
@@ -195,6 +241,14 @@ function iniciaCombate(jogador, monstro, tempo) {
         }
         function resolveFuga(jogador, monstro) {
             exibirComPausa([`   ⤷ Você tenta fugir do combate\t`], 800);
+            if (monstro.nivel > 6) {
+                exibirComPausa(
+                    [`→\tFALHOU! É impossível fugir de ${monstro.nome}!`],
+                    2000,
+                );
+                exibirComPausa('\n', 2000);
+                return false;
+            }
             if (
                 roll + jogador.nivel + jogador.agilidade >
                 10 + monstro.nivel + monstro.agilidade
@@ -215,7 +269,7 @@ function iniciaCombate(jogador, monstro, tempo) {
             }
         }
         function usarInventario(jogador) {
-            jogador.usarItem('Bandagem');
+            jogador.usarItem('Poção');
         }
 
         const roll = rollaDado(20);
@@ -225,11 +279,11 @@ function iniciaCombate(jogador, monstro, tempo) {
             const acao = menuDeSelecao(
                 'Ação de Combate',
                 'ATACAR',
-                'INVENTÁRIO',
+                'POÇÃO',
                 'FUGIR',
             );
             if (acao === 1) resolveTurno(jogador, monstro);
-            else if (acao === 2) usarInventario(jogador, monstro);
+            else if (acao === 2) usarInventario(jogador);
             else if (resolveFuga(jogador, monstro)) {
                 return 'fugiu';
             }
@@ -262,9 +316,9 @@ function iniciaDormir(jogador, dia) {
         console.log(`\n\nAções Disponíveis:`);
         console.log(`[1] Melhorar Arma     \t\tcusta ${jogador.arma + 5}`);
         console.log(`[2] Melhorar Armadura \t\tcusta ${jogador.armadura + 5}`);
-        console.log(`[3] Criar Bandagem    \t\tcusta ${2} sucatas`);
-        console.log(`[4] Aplicar Bandagem  \t\t${jogador.bandagem} bandagens`);
-        console.log(`[5] Comer os Inimigos \t\t${jogador.inimigos} inimigos`);
+        console.log(`[3] Criar Bandagem    \t\tcusta ${2} sucata`);
+        console.log(`[4] Criar Poção       \t\tcusta ${3} sucatas`);
+        console.log(`[5] Comer Suprimentos \t\t${jogador.inimigos} itens`);
         console.log(`[6] DORMIR!\n`);
         try {
             const opcao = parseInt(prompt(`Realizar qual Ação? `));
@@ -285,7 +339,7 @@ function iniciaDormir(jogador, dia) {
                     break;
 
                 case 4:
-                    jogador.usarItem('Bandagem');
+                    jogador.usarSucata('Poção');
                     break;
 
                 case 5:
@@ -293,7 +347,6 @@ function iniciaDormir(jogador, dia) {
                     break;
 
                 case 6:
-                    jogador.inimigos = -jogador.inimigos;
                     exibirComPausa(
                         `\n\t\t    Você procura um canto e se cobre com escombros, você dorme. 
                     Horas depois você desperta sem saber se é noite ou dia, mas não importa... 
@@ -302,7 +355,7 @@ function iniciaDormir(jogador, dia) {
                     } da sua fuga começa e você tem inimigos te separando da liberdade...\n`,
                         20,
                     );
-                    prompt('');
+                    exibirComPausa(' ', 2000);
                     return;
 
                 default:
@@ -422,7 +475,7 @@ function venceBatalha(jogador, nivel) {
     exibirComPausa('\n', 1500);
     jogador.xp = xp;
     jogador.sucata = su;
-    jogador.inimigos = nivel;
+    jogador.inimigos = 1 + Math.floor(nivel / 3);
 }
 
 function perdeBatalha(jogador) {
@@ -764,21 +817,28 @@ class Player extends Personagem {
             this.sucata >= this.arma + 5
                 ? ((this.sucata = -(this.arma + 5)),
                   (this.arma = 1),
-                  prompt(`\t\t\t\t\tSua Arma foi Aprimorada!`))
-                : prompt(`\t\t\t\t\tSucatas insuficientes!`);
+                  exibirComPausa(`\t\t\t\t\tSua Arma foi Aprimorada!`, 25))
+                : exibirComPausa(`\t\t\t\t\tSucatas insuficientes!`, 25);
         } else if (item === 'Armadura') {
             this.sucata >= this.armadura + 5
                 ? ((this.sucata = -(this.armadura + 5)),
                   (this.armadura = 1),
-                  prompt(`\t\t\t\t\tSua Armadura foi Aprimorada!`))
-                : prompt(`\t\t\t\t\tSucatas insuficientes!`);
+                  exibirComPausa(`\t\t\t\t\tSua Armadura foi Aprimorada!`, 25))
+                : exibirComPausa(`\t\t\t\t\tSucatas insuficientes!`, 25);
         } else if (item === 'Bandagem') {
             this.sucata >= 2
                 ? ((this.sucata = -2),
                   (this.bandagem = 1),
-                  prompt(`\t\t\t\t\tUma Bandagem foi criada!`))
-                : prompt(`\t\t\t\t\tSucatas insuficientes!`);
+                  exibirComPausa(`\t\t\t\t\tUma Bandagem foi criada!`, 25))
+                : exibirComPausa(`\t\t\t\t\tSucatas insuficientes!`, 25);
+        } else if (item === 'Poção') {
+            this.sucata >= 3
+                ? ((this.sucata = -3),
+                  (this.pocao = 1),
+                  exibirComPausa(`\t\t\t\t\tUma Poção foi criada!`, 25))
+                : exibirComPausa(`\t\t\t\t\tSucatas insuficientes!`, 25);
         }
+        exibirComPausa(' ', 1500);
     }
 
     usarItem(item) {
@@ -787,27 +847,34 @@ class Player extends Personagem {
             this.bandagem
                 ? ((this.bandagem = -1),
                   (this.pv = cura),
-                  prompt(`\t\t\t\t\tVocê recupera ${cura} pontos de vida`))
-                : prompt(`\t\t\t\t\tVocê não tem Bandagem!`);
+                  exibirComPausa(
+                      `\t\t\t\t\tVocê recupera ${cura} pontos de vida`,
+                      25,
+                  ))
+                : exibirComPausa(`\t\t\t\t\tVocê não tem Bandagem!`, 25);
         } else if (item === 'Poção') {
-            const cura = rollaDado(4) + rollaDado(4) + this.nivel * 2;
+            const cura = rollaDado(3) + this.nivel;
             this.pocao
                 ? ((this.pocao = -1),
                   (this.pv = cura),
-                  prompt(`\t\t\t\t\tVocê recupera ${cura} pontos de vida`))
-                : prompt(`\t\t\t\t\tVocê não tem Poção!`);
+                  exibirComPausa(
+                      `\t\t\t\t\tVocê recupera ${cura} pontos de vida`,
+                      25,
+                  ))
+                : exibirComPausa(`\t\t\t\t\tVocê não tem Poção!`, 25);
         }
+        exibirComPausa(' ', 1500);
     }
 
     comerInimigos() {
         if (this.inimigos) {
-            const cura = this.inimigos;
+            const cura = 1;
             prompt(
                 `Você se prepara para cozinhar os inimigos derrotados hoje.`,
             );
             prompt(`\t\t\t\t\tVocê recuperou ${cura} pontos de vida!`);
             this.pv = cura;
-            this.inimigos = -this.inimigos;
+            this.inimigos = -1;
         } else {
             prompt(`Você não derrotou nenhum inimigo hoje...`);
         }
@@ -816,7 +883,7 @@ class Player extends Personagem {
     subirLVL(xp) {
         const n = this.nivel;
         const nextLVL = 5 * n * (n + 1);
-        console.log(n, nextLVL);
+        // console.log(n, nextLVL);
         if (xp >= nextLVL) {
             this.nivel++;
             console.clear();
@@ -895,16 +962,14 @@ class Ogro extends Monstro {
         console.log(`${this.nome} forte!!! ${this.nome} esmaga!!!`);
     }
 }
-/*
-    TRAMA
-*/
 
 /*
    COMEÇA O JOGO:: MAIN()
 */
+
 function main() {
     // introdução
-    // exibirCena(dados.Textos.Abertura, exibirComPausa);
+    exibirCena(dados.Textos.Abertura, exibirComPausa);
     console.log('\n\n');
     //declaração de variáveis de controle e jogador
     const index_sala = [0, 0];
@@ -919,6 +984,12 @@ function main() {
     iniciaJogo(index_sala, data, fugiu, player, false);
 
     loopPrincipal: while (true) {
+        // Se dia 5 cena final
+        if (data.Dia >= 5) {
+            cenaFinal(player);
+            break loopPrincipal;
+        }
+        // Fora isso Entra na sala selecionada
         fugiu = Sala.entraSala(index_sala[0], player, data);
 
         if (fugiu === 'fugiu') {
