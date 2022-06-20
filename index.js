@@ -38,6 +38,12 @@ function exibirComPausa(msg, miliseconds = 1500) {
     }
 }
 
+function exibirCena(msg, callback) {
+    console.clear();
+    callback(msg, 25);
+    callback(' ', 5000);
+}
+
 function imprimeObjeto(objeto) {
     for (const chave in objeto) {
         if (Object.hasOwnProperty.call(objeto, chave)) {
@@ -391,7 +397,9 @@ class Sala {
         this.portas = { Mae: salamae, Filha: [] };
         this._nivel;
         this.guardiao;
+        this._intro;
 
+        this.setIntro();
         this.setNivel(Math.floor(Sala.salas.length / 4) + 1);
         this.setGuardiao(this._nivel);
 
@@ -409,6 +417,12 @@ class Sala {
     static reiniciaSalas() {
         this.num_salas = 0;
         this.salas = [];
+    }
+
+    setIntro() {
+        const intros = data.Textos.Salas;
+        const num = Math.floor(Math.random() * intros.length);
+        this._intro = intros[num];
     }
 
     setNivel(num) {
@@ -429,10 +443,6 @@ class Sala {
         return this._pos;
     }
 
-    setFilha(valor, index) {
-        this.portas.Filha[index - 1] = Number(valor);
-    }
-
     getFilha(index) {
         try {
             const id_filha = this.portas.Filha[index - 1];
@@ -441,19 +451,25 @@ class Sala {
             console.log(err);
         }
     }
+    setFilha(valor, index) {
+        this.portas.Filha[index - 1] = Number(valor);
+    }
 
-    static entraSala(index, jogador, tempo, acoes) {
+    static entraSala(index, jogador, tempo) {
         let fuga = false;
-        this.salas[index].guardiao.alive
-            ? (fuga = this.salas[index].combateSala(jogador, tempo))
-            : (exibirComPausa(
-                  `\n\t\tVocê entrou na ${Sala.salas[index].nome}`,
-                  25,
-              ),
-              exibirComPausa(' ', 1500));
+        if (this.salas[index].guardiao.alive) {
+            this.salas[index].introSala();
+            fuga = this.salas[index].combateSala(jogador, tempo);
+        } else {
+            exibirComPausa(
+                `\n\t\tVocê entrou na ${Sala.salas[index].nome}`,
+                25,
+            ),
+                exibirComPausa(' ', 1500);
+        }
 
         if (fuga === 'fugiu') return fuga;
-        if (index && acoes < 3 && jogador.alive) {
+        if (index && tempo.Acoes < 3 && jogador.alive) {
             exibirComPausa(
                 `\n\nO monstro já foi derrotado. Você pode fazer algo antes de prosseguir...\n`,
                 25,
@@ -491,7 +507,8 @@ class Sala {
     }
 
     combateSala(jogador, tempo) {
-        const combate = iniciaCombate(jogador, this.guardiao, tempo);
+        tempo.Acoes += 1;
+        const combate = iniciaCombate(jogador, this.guardiao, tempo.Dia);
         if (combate && combate != 'fugiu')
             venceBatalha(jogador, this.guardiao.nivel);
         else if (combate != 'fugiu') perdeBatalha(jogador);
@@ -500,6 +517,10 @@ class Sala {
 
     abrirPorta() {
         entraSala(criarSala(this.index));
+    }
+
+    introSala() {
+        exibirCena(this._intro, exibirComPausa);
     }
 }
 
@@ -838,7 +859,7 @@ function main() {
     iniciaJogo(index_sala, data, fugiu, player, false);
 
     loopPrincipal: while (true) {
-        fugiu = Sala.entraSala(index_sala[0], player, data.Dia, data.Acoes);
+        fugiu = Sala.entraSala(index_sala[0], player, data);
 
         if (fugiu === 'fugiu') {
             index_sala[1] = Sala.salas[index_sala[0]].portas.Mae;
@@ -901,7 +922,6 @@ function main() {
         if (index_sala[1] === -1) break loopPrincipal;
         console.log(index_sala[0], index_sala[1], 147);
         index_sala[0] = index_sala[1];
-        data.Acoes += 1;
     }
 }
 main();
