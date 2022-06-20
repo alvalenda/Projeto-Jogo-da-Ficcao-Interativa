@@ -4,7 +4,7 @@ const fs = require('fs');
 /*
     VARIÁVEIS GLOBAIS
 */
-let monstros = JSON.parse(fs.readFileSync('criaturas.json', 'utf-8'));
+let data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 /*
     FUNÇÕES
 */
@@ -420,7 +420,7 @@ class Sala {
     }
 
     setGuardiao(nivel) {
-        const guardiaoes = monstros.Monstros[nivel - 1];
+        const guardiaoes = data.Monstros[nivel - 1];
         const guardiao = Math.floor(Math.random() * guardiaoes.length);
         this.guardiao = criarMonstro(guardiaoes[guardiao]);
     }
