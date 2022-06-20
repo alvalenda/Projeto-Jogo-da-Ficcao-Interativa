@@ -904,22 +904,26 @@ class Player extends Personagem {
             if (atr === 1) {
                 this.forca = 1;
                 this.maxpv = 1;
-                prompt(
+                exibirComPausa(
                     `\tSua Força aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
+                    25,
                 );
             } else if (atr === 2) {
                 this.agilidade = 1;
                 this.maxpv = 1;
-                prompt(
+                exibirComPausa(
                     `\tSua Agilidade aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 1 pt`,
+                    25,
                 );
             } else {
                 this.robustez = 1;
                 this.maxpv = 1;
-                prompt(
+                exibirComPausa(
                     `\tSua Robustez aumentou em 1 pt\n\tSeus Pontos de Vida aumentaram em 3 pts`,
+                    25,
                 );
             }
+            exibirComPausa(' ', 1500);
         }
     }
 
