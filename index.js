@@ -746,7 +746,7 @@ class Player extends Personagem {
             exibirComPausa(`\n\tVOCE AVANÇOU PARA O NÍVEL ${this.nivel}`, 25);
             exibirComPausa(' ', 1800);
             console.log(
-                'Você tem',
+                '\n\nVocê tem',
                 1,
                 'ponto para evoluir um atributo.',
                 'Qual atributo você deseja evoluir?\n',
