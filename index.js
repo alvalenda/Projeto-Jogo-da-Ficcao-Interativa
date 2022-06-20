@@ -4,7 +4,7 @@ const fs = require('fs');
 /*
     VARIÁVEIS GLOBAIS
 */
-let dados = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+const dados = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 /*
     FUNÇÕES
 */
