@@ -44,6 +44,7 @@ function exibirCena(msg, callback) {
     callback(' ', 5000);
 }
 
+// função utilizada para testar as Classes
 function imprimeObjeto(objeto) {
     for (const chave in objeto) {
         if (Object.hasOwnProperty.call(objeto, chave)) {
@@ -885,6 +886,9 @@ class Player extends Personagem {
         exibirComPausa(' ', 1500);
     }
 
+    // n(n + 1)*5 <=> proximo nível && n(n - 1) <=> nível anterior
+    // xp p/ lvlup de (n -> n+1) => 5n² + 5n - (5n² - 5n) => 5n² - 5n² + 5n + 5n ==> 10n #
+    // Por enquanto subirá de lvl a cada 2.5 monstros do próprio lvl (10*n / 2.5) => 4*n #
     subirLVL(xp) {
         const n = this.nivel;
         const nextLVL = 5 * n * (n + 1);
@@ -1065,8 +1069,3 @@ function main() {
     }
 }
 main();
-
-// n(n + 1)*5 => proximo nível && n(n - 1) => nível anterior
-// xp necessário p/ lvlup de (n -> n+1) => 5n² + 5n - (5n² - 5n)
-// -> 5n² - 5n² + 5n + 5n -> 10n #
-// Por enquanto deixarei o Level up! a cada 2.5 monstros do próprio nível (10*n / 2.5) => 4*n #
