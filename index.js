@@ -4,7 +4,7 @@ const fs = require('fs');
 /*
     VARIÁVEIS GLOBAIS
 */
-let data = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+let dados = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 /*
     FUNÇÕES
 */
@@ -55,16 +55,61 @@ function imprimeObjeto(objeto) {
 
 function iniciaJogo(index_sala, data, fugiu, jogador, restart = false) {
     Sala.reiniciaSalas();
-    criarSala('SalaInicial');
     [index_sala[0], index_sala[1]] = [0, 0];
     data.Dia = 0;
     data.Acoes = 0;
     fugiu = 'não';
-
     restart
         ? jogador.reiniciaPersonagem()
         : (exibirComPausa('\n\t\tJogo Iniciado\n', 25),
           exibirComPausa(' ', 1500));
+
+    criarSala('SalaInicial', jogador);
+}
+
+function cenaInicial(jogador) {
+    let contador = 0;
+    console.log(
+        '\n\nVocê pega as sucatas de pregos e parafusos no chão. O que deseja fazer com eles?\n',
+    );
+    loopCelaInicial: while (true) {
+        const menu = menuDeSelecao(
+            'opção',
+            'Improvisar uma ferramenta',
+            'Socar a porta de cela',
+            'Dormir',
+        );
+        if (contador > 4) {
+            contador > 5
+                ? exibirComPausa('\n\tFuncionou!!! A porta está aberta!\n', 25)
+                : exibirComPausa(
+                      '\n\tComo assim?!?! Quem abriu a porta?\n',
+                      25,
+                  );
+            break loopCelaInicial;
+        } else if (menu === 1) {
+            exibirComPausa(
+                '\n\tMaravilha! Você conseguiu abrir a cela...\n',
+                25,
+            );
+            break loopCelaInicial;
+        } else if (menu === 2) {
+            exibirComPausa('\n\tPalft... você socou a porta da cela.\n', 25);
+            contador += 3;
+        } else if (menu === 3) {
+            exibirComPausa(
+                '\n\tzzz... você dormiu e acordou com o som de um estalo.\n',
+                25,
+            );
+            contador += 1;
+        }
+    }
+    exibirComPausa('\n\t\t\tVocê recebeu 2 pontos de experiência', 25);
+    exibirComPausa('\n\t\t\tVocê recebeu 2 sucatas\n', 25);
+    jogador.xp = 2;
+    jogador.sucata = 2;
+    exibirComPausa(' ', 2000);
+    return;
 }
 
 function criarMonstro(monstro) {
@@ -85,10 +130,10 @@ function criarMonstro(monstro) {
     return _monstro;
 }
 
-function criarSala(indexmae) {
+function criarSala(indexmae, jogador) {
     indexmae != 'SalaInicial'
         ? Sala.salas.push(new Sala(indexmae))
-        : Sala.salas.push(new Cela(indexmae));
+        : Sala.salas.push(new Cela(indexmae, jogador));
     Sala.num_salas += 1;
     return Sala.num_salas - 1;
 }
@@ -420,7 +465,7 @@ class Sala {
     }
 
     setIntro() {
-        const intros = data.Textos.Salas;
+        const intros = dados.Textos.Salas;
         const num = Math.floor(Math.random() * intros.length);
         this._intro = intros[num];
     }
@@ -434,7 +479,7 @@ class Sala {
     }
 
     setGuardiao(nivel) {
-        const guardiaoes = data.Monstros[nivel - 1];
+        const guardiaoes = dados.Monstros[nivel - 1];
         const guardiao = Math.floor(Math.random() * guardiaoes.length);
         this.guardiao = criarMonstro(guardiaoes[guardiao]);
     }
@@ -460,6 +505,15 @@ class Sala {
         if (this.salas[index].guardiao.alive) {
             this.salas[index].introSala();
             fuga = this.salas[index].combateSala(jogador, tempo);
+        } else if (this.salas[index] instanceof Cela) {
+            this.salas[index].abertura
+                ? (this.salas[index].introSala(), cenaInicial(jogador))
+                : (exibirComPausa(
+                      `\n\t\tVocê entrou na ${Sala.salas[index].nome}`,
+                      25,
+                  ),
+                  exibirComPausa(' ', 1500));
+            this.salas[index].abertura = false;
         } else {
             exibirComPausa(
                 `\n\t\tVocê entrou na ${Sala.salas[index].nome}`,
@@ -525,13 +579,15 @@ class Sala {
 }
 
 class Cela extends Sala {
-    constructor(salamae) {
+    constructor(salamae, jogador) {
         super();
         this.nome = 'Cela de Prisão';
         this._pos = Sala.num_salas;
         this._nivel = 0;
         this.portas = { Mae: salamae, Filha: ['Fechada'] };
         this.guardiao = { alive: false };
+        this._intro = dados.Textos.Intro[jogador.race];
+        this.abertura = true;
     }
 }
 
@@ -848,7 +904,9 @@ class Ogro extends Monstro {
 */
 function main() {
     // introdução
-
+    // exibirCena(dados.Textos.Abertura, exibirComPausa);
+    console.log('\n\n');
+    //declaração de variáveis de controle e jogador
     const index_sala = [0, 0];
     const player = new Player(
         playerName(),
@@ -856,6 +914,8 @@ function main() {
     );
     let data = { Dia: 0, Acoes: 0 };
     let fugiu = 'não';
+
+    //prepara variaveis para iniciar ou reiniciar o jogo
     iniciaJogo(index_sala, data, fugiu, player, false);
 
     loopPrincipal: while (true) {
@@ -920,7 +980,7 @@ function main() {
 
         if (index_sala[1] === -99) break loopPrincipal;
         if (index_sala[1] === -1) break loopPrincipal;
-        console.log(index_sala[0], index_sala[1], 147);
+        // console.log(index_sala[0], index_sala[1], 147);
         index_sala[0] = index_sala[1];
     }
 }
