@@ -871,11 +871,11 @@ class Player extends Personagem {
         if (this.inimigos) {
             const cura = 1;
             exibirComPausa(
-                `\n\t\tVocê se prepara para cozinhar suprimentos pilhado de seus inimigos.`,
+                `\n\t\t\t\tVocê se prepara para cozinhar suprimentos pilhado de seus inimigos.`,
                 25,
             );
             exibirComPausa(
-                `\n\t\t\t\t\tVocê recuperou ${cura} pontos de vida!`,
+                `\n\t\t\t\tVocê recuperou ${cura} pontos de vida!`,
                 25,
             );
             this.pv = cura;
@@ -944,7 +944,7 @@ class Player extends Personagem {
             [this.forca, this.agilidade, this.robustez] = [3, 4, 4];
             this.arma = 1;
         } else if (race === 'Humano') {
-            [this.forca, this.agilidade, this.robustez] = [4, 4, 4];
+            [this.forca, this.agilidade, this.robustez] = [4, 4, 0];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
             [this.forca, this.agilidade, this.robustez] = [3, 3, 25];
@@ -1037,7 +1037,12 @@ function main() {
                 25,
             );
             exibirComPausa('\nDejesa continuar jogando? ', 25);
-            const continua = menuDeSelecao('opção', 'SIM', 'NAO', ' ');
+            const continua = menuDeSelecao(
+                'opção',
+                'SIM! Recomeçar',
+                'Trocar de Raça',
+                'Sair',
+            );
             continua == 1
                 ? (exibirComPausa(
                       `\n\tVocê acorda na cela de uma prisão escura...\n\tfoi tudo um sonho? Precisamos sair daqui para saber...`,
@@ -1046,6 +1051,20 @@ function main() {
                   (exibirComPausa('\n', 2000),
                   iniciaJogo(index_sala, data, fugiu, player, true)),
                   (data.Acoes = -1))
+                : continua == 2
+                ? (exibirComPausa(
+                      `\n\tAcompanharemos a história de um novo herói`,
+                      20,
+                  ),
+                  (player.race = menuDeSelecao(
+                      'RAÇA',
+                      'Humano   👨‍🌾',
+                      'Anão \t👳',
+                      'Elfo \t🧝',
+                  )),
+                  iniciaJogo(index_sala, data, fugiu, player, true),
+                  (data.Acoes = -1),
+                  exibirComPausa('\n', 2000))
                 : (exibirComPausa(
                       '\n\tVocê lutou bravamente até a sua última gota de suor',
                       20,
