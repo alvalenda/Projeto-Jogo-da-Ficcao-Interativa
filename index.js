@@ -944,7 +944,7 @@ class Player extends Personagem {
             [this.forca, this.agilidade, this.robustez] = [3, 4, 4];
             this.arma = 1;
         } else if (race === 'Humano') {
-            [this.forca, this.agilidade, this.robustez] = [4, 4, 0];
+            [this.forca, this.agilidade, this.robustez] = [4, 4, 4];
         } else {
             // UTILIZADA PARA TESTAR O JOGO (REMOVER ANTES DA VERSAO FINAL)
             [this.forca, this.agilidade, this.robustez] = [3, 3, 25];
