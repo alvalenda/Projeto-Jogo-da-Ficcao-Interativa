@@ -1043,41 +1043,41 @@ function main() {
                 'Trocar de Raça',
                 'Sair',
             );
-            continua == 1
-                ? (exibirComPausa(
-                      `\n\tVocê acorda na cela de uma prisão escura...\n\tfoi tudo um sonho? Precisamos sair daqui para saber...`,
-                      25,
-                  ),
-                  (exibirComPausa('\n', 2000),
-                  iniciaJogo(index_sala, data, fugiu, player, true)),
-                  (data.Acoes = -1))
-                : continua == 2
-                ? (exibirComPausa(
-                      `\n\tAcompanharemos a história de um novo herói`,
-                      20,
-                  ),
-                  (player.race = menuDeSelecao(
-                      'RAÇA',
-                      'Humano   👨‍🌾',
-                      'Anão \t👳',
-                      'Elfo \t🧝',
-                  )),
-                  iniciaJogo(index_sala, data, fugiu, player, true),
-                  exibirComPausa('\n', 2000))
-                : (exibirComPausa(
-                      '\n\tVocê lutou bravamente até a sua última gota de suor',
-                      20,
-                  ),
-                  exibirComPausa(
-                      `\n\tInfelizmente a história do nosso ${player.race} preferido chegou ao fim...`,
-                      20,
-                  ),
-                  (exibirComPausa(
-                      `\n\n\t\t\t\t\tDescanse em paz ${player.nome}...\n`,
-                      25,
-                  ),
-                  exibirComPausa('\n', 2000)),
-                  index_sala[1] === -1);
+            if (continua === 1) {
+                exibirComPausa(
+                    `\n\tVocê acorda na cela de uma prisão escura...\n\tfoi tudo um sonho? Precisamos sair daqui para saber...`,
+                    25,
+                );
+                exibirComPausa('\n', 2000);
+                iniciaJogo(index_sala, data, fugiu, player, true);
+            } else if (continua === 2) {
+                exibirComPausa(
+                    `\n\tAcompanharemos a história de um novo herói`,
+                    20,
+                );
+                player.race = menuDeSelecao(
+                    'RAÇA',
+                    'Humano   👨‍🌾',
+                    'Anão \t👳',
+                    'Elfo \t🧝',
+                );
+                iniciaJogo(index_sala, data, fugiu, player, true);
+                exibirComPausa('\n', 2000);
+            } else {
+                exibirComPausa(
+                    '\n\tVocê lutou bravamente até a sua última gota de suor',
+                    20,
+                );
+                exibirComPausa(
+                    `\n\tInfelizmente a história do nosso ${player.race} preferido chegou ao fim...`,
+                    20,
+                );
+                exibirComPausa(
+                    `\n\n\t\t\t\t\tDescanse em paz ${player.nome}...\n`,
+                    25,
+                );
+                break loopPrincipal;
+            }
         }
 
         if (index_sala[1] === -99) break loopPrincipal;
