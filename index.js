@@ -1076,7 +1076,8 @@ function main() {
                       `\n\n\t\t\t\t\tDescanse em paz ${player.nome}...\n`,
                       25,
                   ),
-                  exibirComPausa('\n', 2000)));
+                  exibirComPausa('\n', 2000)),
+                  index_sala[1] === -1);
         }
 
         if (index_sala[1] === -99) break loopPrincipal;
