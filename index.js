@@ -1040,8 +1040,8 @@ function main() {
             const continua = menuDeSelecao(
                 'opção',
                 'SIM! Recomeçar',
-                'Trocar de Raça',
-                'Sair',
+                'SIM! Trocar de Raça',
+                'NÃO! Sair',
             );
             if (continua === 1) {
                 exibirComPausa(
