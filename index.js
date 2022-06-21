@@ -23,7 +23,7 @@ function playerName() {
     }
 }
 
-function rollaDado(faces = 20) {
+function rolaDado(faces = 20) {
     const roll = Math.floor(Math.random() * faces) + 1;
     return roll;
 }
@@ -273,7 +273,7 @@ function iniciaCombate(jogador, monstro, tempo) {
             jogador.usarItem('Poção');
         }
 
-        const roll = rollaDado(20);
+        const roll = rolaDado(20);
         imprimeCombate();
 
         if (turno % 2 === primeiro) {
@@ -469,14 +469,14 @@ function menuDeSelecao(menu, a, b, c) {
 
 function venceBatalha(jogador, nivel) {
     const xp = 4 * nivel;
-    const su = rollaDado(2) + rollaDado(2) + nivel;
+    const su = rolaDado(2) + rolaDado(2) + nivel;
     exibirComPausa([`\n\tVocê venceu a Batalha!`], 100);
     exibirComPausa([`\t ${xp} pontos de experiência obtidos`], 1000);
     exibirComPausa([`\n\t\t\t\t ${su} sucatas encontradas na sala`], 1000);
     exibirComPausa('\n', 1500);
     jogador.xp = xp;
     jogador.sucata = su;
-    jogador.inimigos = 1 + Math.floor(nivel / 3);
+    jogador.inimigos = 1 + Math.floor(nivel / 4);
 }
 
 function perdeBatalha(jogador) {
@@ -527,7 +527,7 @@ class Sala {
     setNivel(num) {
         /* Toda sala tem 10% de ser nível - 1 e 10% de ser de um nível + 1 
            Salas de nível 1 não podem retornar nível 0                    */
-        const roll = rollaDado(20);
+        const roll = rolaDado(20);
         const level = roll > 6 ? num : roll > 2 ? num - 1 : num + 1;
         this._nivel = level ? level : 1;
     }
@@ -725,7 +725,7 @@ class Personagem {
     }
 
     rolaDano() {
-        const dano = rollaDado(this.arma * 2) + this.forca;
+        const dano = rolaDado(this.arma * 2) + this.forca;
         return dano;
     }
 }
@@ -844,7 +844,7 @@ class Player extends Personagem {
 
     usarItem(item) {
         if (item === 'Bandagem') {
-            const cura = rollaDado(3) + this.nivel;
+            const cura = rolaDado(3) + this.nivel;
             this.bandagem
                 ? ((this.bandagem = -1),
                   (this.pv = cura),
@@ -854,7 +854,7 @@ class Player extends Personagem {
                   ))
                 : exibirComPausa(`\t\t\t\t\tVocê não tem Bandagem!`, 25);
         } else if (item === 'Poção') {
-            const cura = rollaDado(3) + this.nivel;
+            const cura = rolaDado(3) + this.nivel;
             this.pocao
                 ? ((this.pocao = -1),
                   (this.pv = cura),
