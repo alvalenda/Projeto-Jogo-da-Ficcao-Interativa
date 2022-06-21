@@ -1063,7 +1063,6 @@ function main() {
                       'Elfo \t🧝',
                   )),
                   iniciaJogo(index_sala, data, fugiu, player, true),
-                  (data.Acoes = -1),
                   exibirComPausa('\n', 2000))
                 : (exibirComPausa(
                       '\n\tVocê lutou bravamente até a sua última gota de suor',
@@ -1077,8 +1076,7 @@ function main() {
                       `\n\n\t\t\t\t\tDescanse em paz ${player.nome}...\n`,
                       25,
                   ),
-                  exibirComPausa('\n', 2000),
-                  (index_sala[1] = -1)));
+                  exibirComPausa('\n', 2000)));
         }
 
         if (index_sala[1] === -99) break loopPrincipal;
